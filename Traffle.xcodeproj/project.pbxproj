@@ -1,0 +1,453 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		ED3F6A2519296ED9002C349C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A2419296ED9002C349C /* Foundation.framework */; };
+		ED3F6A2719296ED9002C349C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A2619296ED9002C349C /* CoreGraphics.framework */; };
+		ED3F6A2919296ED9002C349C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A2819296ED9002C349C /* UIKit.framework */; };
+		ED3F6A2F19296ED9002C349C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ED3F6A2D19296ED9002C349C /* InfoPlist.strings */; };
+		ED3F6A3119296ED9002C349C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ED3F6A3019296ED9002C349C /* main.m */; };
+		ED3F6A3519296ED9002C349C /* TraffleAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = ED3F6A3419296ED9002C349C /* TraffleAppDelegate.m */; };
+		ED3F6A3719296EDA002C349C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ED3F6A3619296EDA002C349C /* Images.xcassets */; };
+		ED3F6A3E19296EDA002C349C /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A3D19296EDA002C349C /* XCTest.framework */; };
+		ED3F6A3F19296EDA002C349C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A2419296ED9002C349C /* Foundation.framework */; };
+		ED3F6A4019296EDA002C349C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A2819296ED9002C349C /* UIKit.framework */; };
+		ED3F6A4819296EDA002C349C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = ED3F6A4619296EDA002C349C /* InfoPlist.strings */; };
+		ED3F6A4A19296EDA002C349C /* TraffleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ED3F6A4919296EDA002C349C /* TraffleTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		ED3F6A4119296EDA002C349C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ED3F6A1919296ED9002C349C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ED3F6A2019296ED9002C349C;
+			remoteInfo = Traffle;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		ED3F6A2119296ED9002C349C /* Traffle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Traffle.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED3F6A2419296ED9002C349C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		ED3F6A2619296ED9002C349C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		ED3F6A2819296ED9002C349C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		ED3F6A2C19296ED9002C349C /* Traffle-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Traffle-Info.plist"; sourceTree = "<group>"; };
+		ED3F6A2E19296ED9002C349C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		ED3F6A3019296ED9002C349C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		ED3F6A3219296ED9002C349C /* Traffle-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Traffle-Prefix.pch"; sourceTree = "<group>"; };
+		ED3F6A3319296ED9002C349C /* TraffleAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TraffleAppDelegate.h; sourceTree = "<group>"; };
+		ED3F6A3419296ED9002C349C /* TraffleAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TraffleAppDelegate.m; sourceTree = "<group>"; };
+		ED3F6A3619296EDA002C349C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		ED3F6A3C19296EDA002C349C /* TraffleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TraffleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED3F6A3D19296EDA002C349C /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		ED3F6A4519296EDA002C349C /* TraffleTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "TraffleTests-Info.plist"; sourceTree = "<group>"; };
+		ED3F6A4719296EDA002C349C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		ED3F6A4919296EDA002C349C /* TraffleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TraffleTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		ED3F6A1E19296ED9002C349C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED3F6A2719296ED9002C349C /* CoreGraphics.framework in Frameworks */,
+				ED3F6A2919296ED9002C349C /* UIKit.framework in Frameworks */,
+				ED3F6A2519296ED9002C349C /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED3F6A3919296EDA002C349C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED3F6A3E19296EDA002C349C /* XCTest.framework in Frameworks */,
+				ED3F6A4019296EDA002C349C /* UIKit.framework in Frameworks */,
+				ED3F6A3F19296EDA002C349C /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		ED3F6A1819296ED9002C349C = {
+			isa = PBXGroup;
+			children = (
+				ED3F6A2A19296ED9002C349C /* Traffle */,
+				ED3F6A4319296EDA002C349C /* TraffleTests */,
+				ED3F6A2319296ED9002C349C /* Frameworks */,
+				ED3F6A2219296ED9002C349C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		ED3F6A2219296ED9002C349C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ED3F6A2119296ED9002C349C /* Traffle.app */,
+				ED3F6A3C19296EDA002C349C /* TraffleTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ED3F6A2319296ED9002C349C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ED3F6A2419296ED9002C349C /* Foundation.framework */,
+				ED3F6A2619296ED9002C349C /* CoreGraphics.framework */,
+				ED3F6A2819296ED9002C349C /* UIKit.framework */,
+				ED3F6A3D19296EDA002C349C /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		ED3F6A2A19296ED9002C349C /* Traffle */ = {
+			isa = PBXGroup;
+			children = (
+				ED3F6A3319296ED9002C349C /* TraffleAppDelegate.h */,
+				ED3F6A3419296ED9002C349C /* TraffleAppDelegate.m */,
+				ED3F6A3619296EDA002C349C /* Images.xcassets */,
+				ED3F6A2B19296ED9002C349C /* Supporting Files */,
+			);
+			path = Traffle;
+			sourceTree = "<group>";
+		};
+		ED3F6A2B19296ED9002C349C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				ED3F6A2C19296ED9002C349C /* Traffle-Info.plist */,
+				ED3F6A2D19296ED9002C349C /* InfoPlist.strings */,
+				ED3F6A3019296ED9002C349C /* main.m */,
+				ED3F6A3219296ED9002C349C /* Traffle-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		ED3F6A4319296EDA002C349C /* TraffleTests */ = {
+			isa = PBXGroup;
+			children = (
+				ED3F6A4919296EDA002C349C /* TraffleTests.m */,
+				ED3F6A4419296EDA002C349C /* Supporting Files */,
+			);
+			path = TraffleTests;
+			sourceTree = "<group>";
+		};
+		ED3F6A4419296EDA002C349C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				ED3F6A4519296EDA002C349C /* TraffleTests-Info.plist */,
+				ED3F6A4619296EDA002C349C /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		ED3F6A2019296ED9002C349C /* Traffle */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ED3F6A4D19296EDA002C349C /* Build configuration list for PBXNativeTarget "Traffle" */;
+			buildPhases = (
+				ED3F6A1D19296ED9002C349C /* Sources */,
+				ED3F6A1E19296ED9002C349C /* Frameworks */,
+				ED3F6A1F19296ED9002C349C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Traffle;
+			productName = Traffle;
+			productReference = ED3F6A2119296ED9002C349C /* Traffle.app */;
+			productType = "com.apple.product-type.application";
+		};
+		ED3F6A3B19296EDA002C349C /* TraffleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ED3F6A5019296EDA002C349C /* Build configuration list for PBXNativeTarget "TraffleTests" */;
+			buildPhases = (
+				ED3F6A3819296EDA002C349C /* Sources */,
+				ED3F6A3919296EDA002C349C /* Frameworks */,
+				ED3F6A3A19296EDA002C349C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ED3F6A4219296EDA002C349C /* PBXTargetDependency */,
+			);
+			name = TraffleTests;
+			productName = TraffleTests;
+			productReference = ED3F6A3C19296EDA002C349C /* TraffleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		ED3F6A1919296ED9002C349C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = Traffle;
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = "Nikolay Derkach";
+				TargetAttributes = {
+					ED3F6A3B19296EDA002C349C = {
+						TestTargetID = ED3F6A2019296ED9002C349C;
+					};
+				};
+			};
+			buildConfigurationList = ED3F6A1C19296ED9002C349C /* Build configuration list for PBXProject "Traffle" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = ED3F6A1819296ED9002C349C;
+			productRefGroup = ED3F6A2219296ED9002C349C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				ED3F6A2019296ED9002C349C /* Traffle */,
+				ED3F6A3B19296EDA002C349C /* TraffleTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		ED3F6A1F19296ED9002C349C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED3F6A2F19296ED9002C349C /* InfoPlist.strings in Resources */,
+				ED3F6A3719296EDA002C349C /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED3F6A3A19296EDA002C349C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED3F6A4819296EDA002C349C /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		ED3F6A1D19296ED9002C349C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED3F6A3119296ED9002C349C /* main.m in Sources */,
+				ED3F6A3519296ED9002C349C /* TraffleAppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ED3F6A3819296EDA002C349C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED3F6A4A19296EDA002C349C /* TraffleTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		ED3F6A4219296EDA002C349C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ED3F6A2019296ED9002C349C /* Traffle */;
+			targetProxy = ED3F6A4119296EDA002C349C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		ED3F6A2D19296ED9002C349C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ED3F6A2E19296ED9002C349C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		ED3F6A4619296EDA002C349C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				ED3F6A4719296EDA002C349C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		ED3F6A4B19296EDA002C349C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		ED3F6A4C19296EDA002C349C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		ED3F6A4E19296EDA002C349C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Traffle/Traffle-Prefix.pch";
+				INFOPLIST_FILE = "Traffle/Traffle-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		ED3F6A4F19296EDA002C349C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Traffle/Traffle-Prefix.pch";
+				INFOPLIST_FILE = "Traffle/Traffle-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		ED3F6A5119296EDA002C349C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Traffle.app/Traffle";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Traffle/Traffle-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "TraffleTests/TraffleTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		ED3F6A5219296EDA002C349C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Traffle.app/Traffle";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Traffle/Traffle-Prefix.pch";
+				INFOPLIST_FILE = "TraffleTests/TraffleTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		ED3F6A1C19296ED9002C349C /* Build configuration list for PBXProject "Traffle" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED3F6A4B19296EDA002C349C /* Debug */,
+				ED3F6A4C19296EDA002C349C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ED3F6A4D19296EDA002C349C /* Build configuration list for PBXNativeTarget "Traffle" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED3F6A4E19296EDA002C349C /* Debug */,
+				ED3F6A4F19296EDA002C349C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		ED3F6A5019296EDA002C349C /* Build configuration list for PBXNativeTarget "TraffleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED3F6A5119296EDA002C349C /* Debug */,
+				ED3F6A5219296EDA002C349C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = ED3F6A1919296ED9002C349C /* Project object */;
+}
