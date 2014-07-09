@@ -8,7 +8,11 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TraffleAppDelegate : UIResponder <UIApplicationDelegate>
+#import "ChatViewController.h"
+
+extern NSString * const SearchFilterDistancePrefsKey;
+
+@interface TraffleAppDelegate : UIResponder <UIApplicationDelegate, ChatViewControllerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
