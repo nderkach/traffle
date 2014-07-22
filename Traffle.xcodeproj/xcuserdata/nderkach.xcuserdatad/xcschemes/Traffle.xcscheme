@@ -32,9 +32,19 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ED3F6A3B19296EDA002C349C"
+               BlueprintIdentifier = "ED231312196D072D00AB99DF"
                BuildableName = "TraffleTests.xctest"
                BlueprintName = "TraffleTests"
+               ReferencedContainer = "container:Traffle.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "ED2312FC196D06E500AB99DF"
+               BuildableName = "Traffle Tests.xctest"
+               BlueprintName = "Traffle Tests"
                ReferencedContainer = "container:Traffle.xcodeproj">
             </BuildableReference>
          </TestableReference>
