@@ -13,6 +13,6 @@
 @property (strong, nonatomic) IBOutlet UIImageView *pinchingView;
 @property (strong, nonatomic) IBOutlet UIImageView *shakeitView;
 
-- (IBAction)showLookbackSettings:(id)sender;
+//- (IBAction)showLookbackSettings:(id)sender;
 
 @end

@@ -10,7 +10,7 @@
 #import <Crashlytics/Crashlytics.h>
 #import <Appsee/Appsee.h>
 #import <Reachability.h>
-#import <Lookback/Lookback.h>
+//#import <Lookback/Lookback.h>
 
 #import "TraffleAppDelegate.h"
 #import "DestinationViewController.h"
@@ -52,7 +52,7 @@ NSString * const SearchFilterDistancePrefsKey = @"SearchFilterDistance";
     [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],@"firstLaunchPinch",nil]];
     [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],@"firstLaunchSwipe",nil]];
     
-    [Lookback_Weak setupWithAppToken:@"Fq2wzq8Tvv5y39ENN"];
+//    [Lookback_Weak setupWithAppToken:@"Fq2wzq8Tvv5y39ENN"];
     
     return YES;
 }

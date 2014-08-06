@@ -11,7 +11,7 @@
 #import <POP.h>
 #import <BBBadgeBarButtonItem.h>
 #import <Reachability.h>
-#import <LookBack/LookBack.h>
+//#import <LookBack/LookBack.h>
 #import <Crashlytics/Crashlytics.h>
 #import <Appsee/Appsee.h>
 
@@ -189,7 +189,7 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
         
         [Appsee setUserID:[@[[PFUser currentUser].objectId, [PFUser currentUser][@"Name"], [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleVersionKey]] componentsJoinedByString:@" "]];
         
-        [Lookback_Weak lookback].userIdentifier = [PFUser currentUser][@"Name"];
+//        [Lookback_Weak lookback].userIdentifier = [PFUser currentUser][@"Name"];
     }
 }
 
@@ -298,11 +298,6 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
 //    self.mapView.zoomingInPivotsAroundCenter = YES;
     
     [self.mapView setDelegate:self];
-    
-    UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showLookbackSettings:)];
-    [swipe setDirection:UISwipeGestureRecognizerDirectionUp];
-    [self.shakeitView addGestureRecognizer:swipe];
-    [self.mapView addGestureRecognizer:swipe];
     
     [self.view insertSubview:self.mapView belowSubview:self.chatButton];
     
@@ -775,7 +770,7 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
                 [[PFUser currentUser] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     [Crashlytics setUserName:[PFUser currentUser][@"Name"]];
                     
-                    [Lookback_Weak lookback].userIdentifier = [PFUser currentUser][@"Name"];
+//                    [Lookback_Weak lookback].userIdentifier = [PFUser currentUser][@"Name"];
                     
                     [Appsee setUserID:[@[[PFUser currentUser].objectId, [PFUser currentUser][@"Name"], [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleVersionKey]] componentsJoinedByString:@" "]];
                 }];
@@ -815,14 +810,14 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
     [window.rootViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (IBAction)showLookbackSettings:(id)sender
-{
-        UIViewController *settings = [LookbackSettingsViewController_Weak settingsViewController];
-        if(!settings)
-            return;
-        settings.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissSettings)];
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:settings];
-        [self presentViewController:nav animated:YES completion:nil];
-}
+//- (IBAction)showLookbackSettings:(id)sender
+//{
+//        UIViewController *settings = [LookbackSettingsViewController_Weak settingsViewController];
+//        if(!settings)
+//            return;
+//        settings.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismissSettings)];
+//        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:settings];
+//        [self presentViewController:nav animated:YES completion:nil];
+//}
 
 @end

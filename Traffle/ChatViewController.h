@@ -54,6 +54,4 @@
 
 - (void)closePressed:(UIBarButtonItem *)sender;
 
-//- (void)setupTestModel;
-
 @end
