@@ -58,7 +58,7 @@
                                 <accessibility key="accessibilityConfiguration">
                                     <bool key="isElement" value="NO"/>
                                 </accessibility>
-                                <state key="normal" image="lookback-recorder-logo.png">
+                                <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
@@ -198,7 +198,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <imageView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="accept_decline_big" translatesAutoresizingMaskIntoConstraints="NO" id="qIr-Cs-7TH">
+                                    <imageView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="accept_decline_big" translatesAutoresizingMaskIntoConstraints="NO" id="qIr-Cs-7TH">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -215,17 +215,25 @@
                                         </state>
                                         <state key="highlighted" title="Close"/>
                                     </button>
+                                    <imageView userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="shake_on" translatesAutoresizingMaskIntoConstraints="NO" id="tIb-3o-MLi">
+                                        <rect key="frame" x="81" y="414" width="159" height="52"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="52" id="YBx-0H-3Hc"/>
+                                            <constraint firstAttribute="width" constant="159" id="oVA-xs-bm6"/>
+                                        </constraints>
+                                    </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            </view>
-                            <imageView userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="shake_on" translatesAutoresizingMaskIntoConstraints="NO" id="tIb-3o-MLi">
-                                <rect key="frame" x="81" y="473" width="159" height="52"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="52" id="YBx-0H-3Hc"/>
-                                    <constraint firstAttribute="width" constant="159" id="oVA-xs-bm6"/>
+                                    <constraint firstAttribute="bottom" secondItem="tIb-3o-MLi" secondAttribute="bottom" constant="102" id="5ue-q2-F43"/>
+                                    <constraint firstItem="qIr-Cs-7TH" firstAttribute="top" secondItem="94G-pZ-HSp" secondAttribute="top" id="7XV-5c-d8e"/>
+                                    <constraint firstItem="tIb-3o-MLi" firstAttribute="centerX" secondItem="qIr-Cs-7TH" secondAttribute="centerX" id="FRY-pt-joj"/>
+                                    <constraint firstAttribute="bottom" secondItem="qIr-Cs-7TH" secondAttribute="bottom" id="huW-Z0-fJA"/>
+                                    <constraint firstItem="qIr-Cs-7TH" firstAttribute="leading" secondItem="94G-pZ-HSp" secondAttribute="leading" id="kY6-Zw-SzS"/>
+                                    <constraint firstItem="tIb-3o-MLi" firstAttribute="centerX" secondItem="94G-pZ-HSp" secondAttribute="centerX" id="n7R-L2-X8C"/>
                                 </constraints>
-                            </imageView>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -234,7 +242,6 @@
                             <constraint firstItem="IiQ-9P-LsO" firstAttribute="centerX" secondItem="Ak6-vs-NbD" secondAttribute="centerX" id="6JV-nW-hda"/>
                             <constraint firstItem="2VC-pe-QuD" firstAttribute="centerX" secondItem="wDE-jZ-7ry" secondAttribute="centerX" id="7nY-rJ-9zb"/>
                             <constraint firstItem="Ak6-vs-NbD" firstAttribute="top" secondItem="kUh-o9-wpG" secondAttribute="top" id="927-02-CmQ"/>
-                            <constraint firstItem="tIb-3o-MLi" firstAttribute="centerX" secondItem="94G-pZ-HSp" secondAttribute="centerX" id="D2v-q2-jnP"/>
                             <constraint firstItem="Ak6-vs-NbD" firstAttribute="leading" secondItem="XBo-N1-8au" secondAttribute="leading" id="GAN-Ft-7iI"/>
                             <constraint firstItem="Ak6-vs-NbD" firstAttribute="leading" secondItem="wDE-jZ-7ry" secondAttribute="leading" id="JYd-j8-Hqb"/>
                             <constraint firstItem="IiQ-9P-LsO" firstAttribute="centerY" secondItem="2VC-pe-QuD" secondAttribute="centerY" constant="-4" id="KlP-r7-Upo"/>
@@ -244,7 +251,6 @@
                             <constraint firstItem="CWH-bk-Ljk" firstAttribute="centerX" secondItem="7VA-Ff-OVR" secondAttribute="centerX" constant="-1" id="PgB-cP-rhS"/>
                             <constraint firstItem="CWH-bk-Ljk" firstAttribute="top" secondItem="2VC-pe-QuD" secondAttribute="bottom" constant="28" id="SWo-j0-nlD"/>
                             <constraint firstItem="94G-pZ-HSp" firstAttribute="leading" secondItem="CWH-bk-Ljk" secondAttribute="leading" id="TP8-OD-5bm"/>
-                            <constraint firstItem="vt2-ZB-aib" firstAttribute="top" secondItem="tIb-3o-MLi" secondAttribute="bottom" constant="-1" id="ahJ-gA-1ln"/>
                             <constraint firstItem="7VA-Ff-OVR" firstAttribute="top" secondItem="CWH-bk-Ljk" secondAttribute="bottom" constant="24" id="btk-Tg-yHj"/>
                             <constraint firstItem="vt2-ZB-aib" firstAttribute="top" secondItem="7VA-Ff-OVR" secondAttribute="bottom" constant="72" id="c0V-9T-Kxj"/>
                             <constraint firstItem="CWH-bk-Ljk" firstAttribute="leading" secondItem="wDE-jZ-7ry" secondAttribute="leading" id="eaS-yc-zmE"/>
@@ -255,7 +261,7 @@
                             <constraint firstItem="94G-pZ-HSp" firstAttribute="bottom" secondItem="kUh-o9-wpG" secondAttribute="bottom" id="iVP-gz-FsI"/>
                             <constraint firstItem="IiQ-9P-LsO" firstAttribute="centerX" secondItem="2VC-pe-QuD" secondAttribute="centerX" id="pmc-jE-hHq"/>
                             <constraint firstItem="CWH-bk-Ljk" firstAttribute="centerX" secondItem="IiQ-9P-LsO" secondAttribute="centerX" id="qtX-3r-6Ll"/>
-                            <constraint firstItem="tIb-3o-MLi" firstAttribute="centerX" secondItem="CWH-bk-Ljk" secondAttribute="centerX" id="thn-Gk-eaB"/>
+                            <constraint firstItem="94G-pZ-HSp" firstAttribute="trailing" secondItem="XBo-N1-8au" secondAttribute="trailing" id="w9p-OQ-DBt"/>
                             <constraint firstItem="94G-pZ-HSp" firstAttribute="top" secondItem="XBo-N1-8au" secondAttribute="top" id="yUe-fE-hFE"/>
                             <constraint firstItem="Ak6-vs-NbD" firstAttribute="bottom" secondItem="kUh-o9-wpG" secondAttribute="bottom" id="zN6-AK-r9r"/>
                         </constraints>
@@ -390,30 +396,12 @@
             </objects>
             <point key="canvasLocation" x="243" y="-175"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="onc-Yu-aFF">
-            <objects>
-                <viewController id="nfN-Fl-RpA" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="tRa-C0-1GU"/>
-                        <viewControllerLayoutGuide type="bottom" id="yXG-2z-jmk"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="R5A-9K-CsP">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="1kN-03-wTH" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-        </scene>
     </scenes>
     <resources>
         <image name="accept_decline_big" width="640" height="1136"/>
         <image name="background_gradient_mask.png" width="320" height="568"/>
         <image name="big_screen_bg_BLUR.png" width="640" height="1136"/>
         <image name="destination_picture_mask.png" width="115" height="120"/>
-        <image name="lookback-recorder-logo.png" width="50" height="29"/>
         <image name="scope_big" width="640" height="1136"/>
         <image name="shake_big" width="640" height="1136"/>
         <image name="shake_on" width="318" height="104"/>
@@ -425,7 +413,7 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="p2K-tu-YbQ"/>
-        <segue reference="fbZ-Ke-dk8"/>
-        <segue reference="hzC-vw-B1m"/>
+        <segue reference="9il-V1-8ja"/>
+        <segue reference="p28-IO-K1h"/>
     </inferredMetricsTieBreakers>
 </document>

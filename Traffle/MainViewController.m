@@ -421,7 +421,7 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
     
 //    NSLog(@"%@", self.mapView.annotations);
     
-    RMAnnotation *userLocationAnnotation = [self.mapView.annotations firstObject];
+//    RMAnnotation *userLocationAnnotation = [self.mapView.annotations firstObject];
 //    [userLocationAnnotation.layer pop_addAnimation:anim forKey:@"positionY"];
     
 
@@ -655,7 +655,7 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
                     fanim.duration = 1.0f;
                     fanim.completionBlock = ^(POPAnimation *anim, BOOL finished) {
                         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pinchitTapped)];
-                        UITapGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchitTapped)];
+                        UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinchitTapped)];
                         [self.pinchingView addGestureRecognizer:tap];
                         [self.pinchingView addGestureRecognizer:pinch];
 
@@ -682,7 +682,7 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
 - (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
     // user has logged in - we need to fetch all of their Facebook data before we let them in
     
-    PFUser *usr = [PFUser currentUser];
+//    PFUser *usr = [PFUser currentUser];
     
     [Crashlytics setUserIdentifier:[PFUser currentUser].objectId];
     

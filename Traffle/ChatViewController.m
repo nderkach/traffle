@@ -526,6 +526,8 @@
      *  Instead, override the properties you want on `self.collectionView.collectionViewLayout` from `viewDidLoad`
      */
     
+    NSLog(@"Cell for %d", indexPath.item);
+    
     JSQMessage *msg = [self.messages objectAtIndex:indexPath.item];
     
     if ([msg.sender isEqualToString:self.sender]) {
@@ -736,9 +738,11 @@
         
         NSLog(@"Ready to present messages: %@", self.messages);
         
-        [self.collectionView reloadData];
+        [self finishReceivingMessage];
         
-        [self scrollToBottomAnimated:YES];
+//        [self.collectionView reloadData];
+//        
+//        [self scrollToBottomAnimated:YES];
         
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.messages];
         [[NSUserDefaults standardUserDefaults] setObject:data forKey:self.conversation.objectId];
@@ -826,8 +830,9 @@
 
                     if ([objects count] == [storedMessages count]) {
                         self.messages = [[NSMutableArray alloc] initWithArray:storedMessages];
-                        [self.collectionView reloadData];
-                        [self scrollToBottomAnimated:NO];
+//                        [self.collectionView reloadData];
+//                        [self scrollToBottomAnimated:NO];
+                        [self finishReceivingMessage];
                         [self.progressHud hide:YES];
                         self.collectionView.collectionViewLayout.springinessEnabled = YES;
                     } else {
@@ -919,6 +924,7 @@
     if ([pNotification.userInfo[@"type"] isEqualToString:@"message"] &&
         [pNotification.userInfo[@"from"] isEqualToString:self.recipient.objectId])
     {
+        self.showTypingIndicator = YES;
         NSLog(@"New message: %@", pNotification.userInfo);
 //        Message *message = [[Message alloc] initWithText:pNotification.userInfo[@"text"] sender:self.recipient recipient:[PFUser currentUser] conversation:self.conversation];
         JSQMessage *message = [[JSQMessage alloc] initWithText:pNotification.userInfo[@"text"] sender:self.recipient.username date:[NSDate date]];
@@ -926,7 +932,6 @@
         [self.messages addObject:message];
         
         [PFInstallation currentInstallation].badge -= 1;
-        NSLog(@"pushNotificationReceived badge: %d", [PFInstallation currentInstallation].badge);
         [[PFInstallation currentInstallation] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if (!error) {
                 [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[PFInstallation currentInstallation].badge];
@@ -936,16 +941,16 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             // Update the UI
 
-            [self.collectionView reloadData];
-            [self scrollToBottomAnimated:YES];
+            [self finishReceivingMessage];
         });
     }
 }
 
 - (void) broughtToForeground
 {
-    [self.collectionView reloadData];
-    [self scrollToBottomAnimated:YES];
+//    [self.collectionView reloadData];
+//    [self scrollToBottomAnimated:YES];
+    [self finishReceivingMessage];
 }
 
 @end

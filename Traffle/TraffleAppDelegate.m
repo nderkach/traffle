@@ -123,23 +123,24 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken {
     // Store the deviceToken in the current installation and save it to Parse.
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:newDeviceToken];
-    [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (!error) {
-            // Temp: reset currentinstallation
-            CLSLog(@"current installation object id: %@", currentInstallation.objectId);
-            [PFCloud callFunctionInBackground:@"badgeCount"
-                               withParameters:@{@"currentInstallation": currentInstallation.objectId}
-                                        block:^(NSNumber *count, NSError *error) {
-                                            if (!error) {
-                                                [PFInstallation currentInstallation].badge = [count intValue];
-                                                NSLog(@"[PFInstallation currentInstallation].badge: %ld", (long)[PFInstallation currentInstallation].badge);
-                                                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[PFInstallation currentInstallation].badge];
-                                            }
-                                        }];
-        } else {
-            CLS_LOG(@"current installation saving failed: %@", error);
-        }
-    }];
+    [currentInstallation saveInBackground];
+//    [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+//        if (!error) {
+//            // Temp: reset currentinstallation
+//            CLSLog(@"current installation object id: %@", currentInstallation.objectId);
+//            [PFCloud callFunctionInBackground:@"badgeCount"
+//                               withParameters:@{@"currentInstallation": currentInstallation.objectId}
+//                                        block:^(NSNumber *count, NSError *error) {
+//                                            if (!error) {
+//                                                [PFInstallation currentInstallation].badge = [count intValue];
+//                                                NSLog(@"[PFInstallation currentInstallation].badge: %ld", (long)[PFInstallation currentInstallation].badge);
+//                                                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[PFInstallation currentInstallation].badge];
+//                                            }
+//                                        }];
+//        } else {
+//            CLS_LOG(@"current installation saving failed: %@", error);
+//        }
+//    }];
 }
 
 - (void)didDismissChatViewController:(ChatViewController *)vc

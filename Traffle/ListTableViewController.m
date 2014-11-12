@@ -25,6 +25,23 @@ static int delay = 0.0;
 
 @end
 
+@implementation PFImageView (Utility)
+
+// Add a fade animation to images
+-(void) setImage:(UIImage *)image {
+    if ([self.layer animationForKey:@"KEY_FADE_ANIMATION"] == nil) {
+        CABasicAnimation *crossFade = [CABasicAnimation animationWithKeyPath:@"contents"];
+        crossFade.duration = 0.6;
+        crossFade.fromValue  = (__bridge id)(self.image.CGImage);
+        crossFade.toValue = (__bridge id)(image.CGImage);
+        crossFade.removedOnCompletion = NO;
+        [self.layer addAnimation:crossFade forKey:@"KEY_FADE_ANIMATION"];
+    }
+    [super setImage:image];
+}
+
+@end
+
 @implementation CustomPFTableViewCell
 
 - (void)setBadgeText:(NSString *)text
@@ -59,6 +76,7 @@ static int delay = 0.0;
     self.imageView.frame = CGRectMake(19, 27, 53, 53);
     self.imageView.layer.cornerRadius = 27;
     self.imageView.layer.masksToBounds = YES;
+    [self addSubview:self.imageView];
 
     UIImage *badgeMask = [UIImage imageNamed:@"chat_new_msg"];
     self.badgeView.frame = CGRectMake(61, 29, badgeMask.size.width, badgeMask.size.height);
@@ -333,10 +351,8 @@ static int delay = 0.0;
     cell.textLabel.attributedText = finalString;
     cell.textLabel.textColor = [UIColor whiteColor];
     
-    //        cell.imageView.file = thumbnail;
-    
     [thumbnail getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-        cell.imageView.image = [UIImage imageWithData:data];
+        [cell.imageView setImage:[UIImage imageWithData:data]];
         [cell.imageView setNeedsDisplay];
         [cell setNeedsLayout];
     }];
@@ -354,13 +370,13 @@ static int delay = 0.0;
         cell = [[CustomPFTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     
         // Configure the cell
-
+        
         NSUInteger numberOfMessagesCached = [[NSUserDefaults standardUserDefaults] objectForKey:object.objectId]? [[NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:object.objectId]] count]: 0;
         NSLog(@"numberOfMessagesCached: %lu", (unsigned long)numberOfMessagesCached);
         NSUInteger totalNumberofMessages = [object[@"messageCount"] unsignedIntegerValue];
         NSLog(@"totalNumberofMessages: %lu", (unsigned long)totalNumberofMessages);
         if (totalNumberofMessages > numberOfMessagesCached) {
-            [cell setBadgeText:[NSString stringWithFormat:@"%u", totalNumberofMessages - numberOfMessagesCached]];
+            [cell setBadgeText:[NSString stringWithFormat:@"%lu", totalNumberofMessages - numberOfMessagesCached]];
         }
 
         cell.backgroundColor = [UIColor clearColor];
@@ -371,8 +387,9 @@ static int delay = 0.0;
         
 //        NSLog(@"%@", [PFUser currentUser]);
 //        NSLog(@"%@", otherUser);
-//        [otherUser fetchIfNeeded];
         NSLog(@"Fetching %@...", otherUser.objectId);
+
+        cell.imageView.image = [UIImage imageNamed:@"big_screen_bg_BLUR"];
         
         if ([self.cachedUsers objectForKey:otherUser.objectId]) {
             NSLog(@"%@ cached", otherUser.objectId);
@@ -388,10 +405,10 @@ static int delay = 0.0;
         POPSpringAnimation *onscreenAnimation = [POPSpringAnimation animationWithPropertyNamed:kPOPLayerPositionX];
         onscreenAnimation.fromValue = @(-toValue);
         onscreenAnimation.toValue = @(toValue);
-        onscreenAnimation.springBounciness = 5.f;
+        onscreenAnimation.springBounciness = 5.0f;
         onscreenAnimation.beginTime = (CACurrentMediaTime() + delay);
         onscreenAnimation.delegate = self;
-        onscreenAnimation.name = [NSString stringWithFormat:@"%d", [indexPath row]];
+        onscreenAnimation.name = [NSString stringWithFormat:@"%ld", (long)[indexPath row]];
         delay+=0.7;
 
         cell.hidden = YES;

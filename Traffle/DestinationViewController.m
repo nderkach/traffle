@@ -401,6 +401,8 @@
 - (NSMutableAttributedString *)getHangoutStringWithName:(NSString *)name city:(NSString *)city incoming:(BOOL)incoming
 {
     CLS_LOG(@"getHangoutStringWithName: %@, %@", name, city);
+    if (!city)
+        city = @"Mars";
     UIFont *avenirFontDemiBold = [UIFont fontWithName:@"AvenirNextCondensed-DemiBold" size:33.5f];
     UIFont *avenirFontRegular = [UIFont fontWithName:@"AvenirNextCondensed-Regular" size:33.5f];
     NSDictionary *avenirFontDemiBoldDict = @{NSFontAttributeName: avenirFontDemiBold};
@@ -559,7 +561,8 @@
 - (void)swipedRight
 {
     if (self.incoming) {
-        [PFInstallation currentInstallation].badge -= 1;
+        if ([PFInstallation currentInstallation].badge > 0)
+            [PFInstallation currentInstallation].badge -= 1;
         self.barButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)[PFInstallation currentInstallation].badge];
         
         [[self.requests lastObject] setObject:@YES forKey:@"accepted"];
@@ -706,7 +709,8 @@
 - (void)swipedLeft
 {
     if (self.incoming) {
-        [PFInstallation currentInstallation].badge -= 1;
+        if ([PFInstallation currentInstallation].badge > 0)
+            [PFInstallation currentInstallation].badge -= 1;
         self.barButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)[PFInstallation currentInstallation].badge];
         [[self.requests lastObject] setObject:@NO forKey:@"accepted"];
         [[self.requests lastObject] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {

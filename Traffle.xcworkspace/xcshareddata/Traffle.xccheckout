@@ -10,29 +10,29 @@
 	<string>Traffle</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>0EB9DE8E-6474-443B-8E6E-F78EA2513DB1</key>
+		<key>66AF199A8E4089A05ABAFE11AEC024474D572DDC</key>
 		<string>ssh://bitbucket.org/traffle/traffle-social.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>Traffle.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>0EB9DE8E-6474-443B-8E6E-F78EA2513DB1</key>
+		<key>66AF199A8E4089A05ABAFE11AEC024474D572DDC</key>
 		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>ssh://bitbucket.org/traffle/traffle-social.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>0EB9DE8E-6474-443B-8E6E-F78EA2513DB1</string>
+	<string>66AF199A8E4089A05ABAFE11AEC024474D572DDC</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>0EB9DE8E-6474-443B-8E6E-F78EA2513DB1</string>
+			<string>66AF199A8E4089A05ABAFE11AEC024474D572DDC</string>
 			<key>IDESourceControlWCCName</key>
 			<string>Traffle</string>
 		</dict>
