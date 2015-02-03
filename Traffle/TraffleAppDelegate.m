@@ -32,10 +32,17 @@ NSString * const SearchFilterDistancePrefsKey = @"SearchFilterDistance";
     [Crashlytics startWithAPIKey:@"86953a5b504233c5b2b755070e77d9702c2af50b"];
     
     // Register for push notifications
-    [application registerForRemoteNotificationTypes:
-     UIRemoteNotificationTypeBadge |
-     UIRemoteNotificationTypeAlert |
-     UIRemoteNotificationTypeSound];
+    if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
+    {
+        [application registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+        
+        [application registerForRemoteNotifications];
+    }
+    else
+    {
+        [application registerForRemoteNotificationTypes:
+         (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
+    }
     
     // Allocate a reachability object
     Reachability* reach = [Reachability reachabilityWithHostname:@"www.google.com"];

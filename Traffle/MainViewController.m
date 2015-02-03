@@ -464,6 +464,11 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
         self.locationManager = [[CLLocationManager alloc] init];
     
     self.locationManager.delegate = self;
+
+    if ([self.locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
+        [self.locationManager requestAlwaysAuthorization];
+
+    }
     [self.locationManager startMonitoringSignificantLocationChanges];
     //FIXME: temporary update location all the time
 //    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;

@@ -19,7 +19,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.1</string>
+	<string>1.0.3</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -32,13 +32,15 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>78</string>
+	<string>14</string>
 	<key>FacebookAppID</key>
 	<string>234204846766341</string>
 	<key>FacebookDisplayName</key>
 	<string>Traffle</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Let Traffle know when you move to a different city</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
