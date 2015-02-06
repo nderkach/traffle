@@ -159,11 +159,16 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
 {
     [super viewWillAppear:animated];
     
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotificationReceived:) name:@"pushNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotificationReceived:) name:@"pushNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(nomatches:) name:@"nomatches" object:nil];
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunchPinch"]) {
         self.shakeitView.hidden = NO;
+
+        UIImageView *closeButton = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"close_button"]];
+        closeButton.frame = CGRectMake(10, 10, 30, 30);
+        [self.shakeitView addSubview:closeButton];
+
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(shakeitTapped)];
         [self.shakeitView addGestureRecognizer:tap];
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"firstLaunchPinch"];
@@ -365,12 +370,12 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
 }
 
 
-//- (void)pushNotificationReceived:(NSNotification*)aNotification
-//{
-//    self.barButton.badgeValue =
-//        [NSString stringWithFormat:@"%d", [self.barButton.badgeValue intValue] + 1];
-//    
-//}
+- (void)pushNotificationReceived:(NSNotification*)aNotification
+{
+    self.barButton.badgeValue =
+        [NSString stringWithFormat:@"%d", [self.barButton.badgeValue intValue] + 1];
+    
+}
 
 - (void)nomatches:(NSNotification*)aNotification
 {
@@ -831,7 +836,7 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
         destinationViewController.incoming = NO;
         destinationViewController.center = [PFGeoPoint geoPointWithLatitude:self.mapView.centerCoordinate.latitude longitude:self.mapView.centerCoordinate.longitude];
     } else if ([segue.identifier isEqualToString:@"segueListView"]) {
-        ListTableViewController *lvc = segue.destinationViewController;
+//        ListTableViewController *lvc = segue.destinationViewController;
 //        lvc.cachedUsers = self.cachedUsers;
     }
 }
@@ -850,5 +855,6 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
 //        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:settings];
 //        [self presentViewController:nav animated:YES completion:nil];
 //}
+
 
 @end

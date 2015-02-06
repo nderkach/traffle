@@ -161,6 +161,11 @@
         UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(acceptViewTapped)];
         [self.acceptView addGestureRecognizer:tap];
         [self.acceptView addGestureRecognizer:pinch];
+        
+        UIImageView *closeButton = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"close_button"]];
+        closeButton.frame = CGRectMake(10, 10, 30, 30);
+        [self.acceptView addSubview:closeButton];
+        
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"firstLaunchSwipe"];
     }
     
