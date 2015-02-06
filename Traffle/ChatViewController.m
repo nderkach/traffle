@@ -24,16 +24,9 @@
 
 #import "ChatViewController.h"
 #import "Constants.h"
-
-//static NSString * const kJSQDemoAvatarNameCook = @"Tim Cook";
-//static NSString * const kJSQDemoAvatarNameJobs = @"Jobs";
-//static NSString * const kJSQDemoAvatarNameWoz = @"Steve Wozniak";
+#import "camera.h"
 
 @interface Message ()
-
-//@property (strong, nonatomic) NSDate *date;
-//@property (strong, nonatomic) NSString *sender;
-//@property (strong, nonatomic) NSString *text;
 
 @end
 
@@ -105,96 +98,27 @@
 @end
 
 @interface ChatViewController ()
+{
+    NSTimer *timer;
+    BOOL isLoading;
+    
+    NSMutableArray *users;
+    NSMutableArray *messages;
+    NSMutableDictionary *avatars;
+    
+    JSQMessagesBubbleImage *bubbleImageOutgoing;
+    JSQMessagesBubbleImage *bubbleImageIncoming;
+    
+    JSQMessagesAvatarImage *avatarImageBlank;
+}
 
 @property (strong, nonatomic) NSMutableArray *messageObjects;
 @property (strong, nonatomic) MBProgressHUD *progressHud;
+@property (strong, nonatomic) PFUser *recipient;
 
 @end
 
-
 @implementation ChatViewController
-
-//#pragma mark - Demo setup
-//
-//- (void)setupTestModel
-//{
-//    /**
-//     *  Load some fake messages for demo.
-//     *
-//     *  You should have a mutable array or orderedSet, or something.
-//     */
-//    self.messages = [[NSMutableArray alloc] initWithObjects:
-//                     [[JSQMessage alloc] initWithText:@"Welcome to JSQMessages: A messaging UI framework for iOS." sender:self.sender date:[NSDate distantPast]],
-//                     [[JSQMessage alloc] initWithText:@"It is simple, elegant, and easy to use. There are super sweet default settings, but you can customize like crazy." sender:kJSQDemoAvatarNameWoz date:[NSDate distantPast]],
-//                     [[JSQMessage alloc] initWithText:@"It even has data detectors. You can call me tonight. My cell number is 123-456-7890. My website is www.hexedbits.com." sender:self.sender date:[NSDate distantPast]],
-//                     [[JSQMessage alloc] initWithText:@"JSQMessagesViewController is nearly an exact replica of the iOS Messages App. And perhaps, better." sender:kJSQDemoAvatarNameJobs date:[NSDate date]],
-//                     [[JSQMessage alloc] initWithText:@"It is unit-tested, free, and open-source." sender:kJSQDemoAvatarNameCook date:[NSDate date]],
-//                     [[JSQMessage alloc] initWithText:@"Oh, and there's sweet documentation." sender:self.sender date:[NSDate date]],
-//                     nil];
-//    
-//    /**
-//     *  Create avatar images once.
-//     *
-//     *  Be sure to create your avatars one time and reuse them for good performance.
-//     *
-//     *  If you are not using avatars, ignore this.
-//     */
-//    CGFloat outgoingDiameter = self.collectionView.collectionViewLayout.outgoingAvatarViewSize.width;
-//    
-//    UIImage *jsqImage = [JSQMessagesAvatarFactory avatarWithUserInitials:@"JSQ"
-//                                                         backgroundColor:[UIColor colorWithWhite:0.85f alpha:1.0f]
-//                                                               textColor:[UIColor colorWithWhite:0.60f alpha:1.0f]
-//                                                                    font:[UIFont systemFontOfSize:14.0f]
-//                                                                diameter:outgoingDiameter];
-//    
-//    CGFloat incomingDiameter = self.collectionView.collectionViewLayout.incomingAvatarViewSize.width;
-//    
-//    UIImage *cookImage = [JSQMessagesAvatarFactory avatarWithImage:[UIImage imageNamed:@"demo_avatar_cook"]
-//                                                          diameter:incomingDiameter];
-//    
-//    UIImage *jobsImage = [JSQMessagesAvatarFactory avatarWithImage:[UIImage imageNamed:@"demo_avatar_jobs"]
-//                                                          diameter:incomingDiameter];
-//    
-//    UIImage *wozImage = [JSQMessagesAvatarFactory avatarWithImage:[UIImage imageNamed:@"demo_avatar_woz"]
-//                                                         diameter:incomingDiameter];
-//    self.avatars = @{ self.sender : jsqImage,
-//                      kJSQDemoAvatarNameCook : cookImage,
-//                      kJSQDemoAvatarNameJobs : jobsImage,
-//                      kJSQDemoAvatarNameWoz : wozImage };
-//    
-//    /**
-//     *  Change to add more messages for testing
-//     */
-//    NSUInteger messagesToAdd = 0;
-//    NSArray *copyOfMessages = [self.messages copy];
-//    for (NSUInteger i = 0; i < messagesToAdd; i++) {
-//        [self.messages addObjectsFromArray:copyOfMessages];
-//    }
-//    
-//    /**
-//     *  Change to YES to add a super long message for testing
-//     *  You should see "END" twice
-//     */
-//    BOOL addREALLYLongMessage = NO;
-//    if (addREALLYLongMessage) {
-//        JSQMessage *reallyLongMessage = [JSQMessage messageWithText:@"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? END Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? END" sender:self.sender];
-//        [self.messages addObject:reallyLongMessage];
-//    }
-//}
-
-
-
-#pragma mark - View lifecycle
-
-/**
- *  Override point for customization.
- *
- *  Customize your view.
- *  Look at the properties on `JSQMessagesViewController` to see what is possible.
- *
- *  Customize your layout.
- *  Look at the properties on `JSQMessagesCollectionViewFlowLayout` to see what is possible.
- */
 
 - (UIImage *)blendImagesWithBackground: (UIImage *)background foreground: (UIImage *)foreground
 {
@@ -221,237 +145,370 @@
     } else {
         self.collectionView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"small_screen_bg_BLUR"]];
     }
-
-//    self.view.userInteractionEnabled = YES;
-//    self.automaticallyScrollsToMostRecentMessage = YES;
-//    self.showLoadEarlierMessagesHeader = YES;
+    
+    users = [[NSMutableArray alloc] init];
+    messages = [[NSMutableArray alloc] init];
+    avatars = [[NSMutableDictionary alloc] init];
     
     UIFont *avenirFont = [UIFont fontWithName:@"AvenirNextCondensed-Regular" size:20.5f];
     self.collectionView.collectionViewLayout.messageBubbleFont = avenirFont;
-    
+    self.recipient = [self.conversation[@"participants"] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.objectId != %@", [PFUser currentUser].objectId]].firstObject;
     self.title = self.recipient[@"Name"];
-//    self.messageInputView.textView.placeHolder = NSLocalizedString(@"Your message", @"");
-    self.sender = [PFUser currentUser].username;
+//    self.sender = [PFUser currentUser].username;
     
-    CGFloat outgoingDiameter = self.collectionView.collectionViewLayout.outgoingAvatarViewSize.width;
+//    self.avatars = [[NSMutableDictionary alloc] init];
     
-    PFFile *file = [PFUser currentUser][@"Photo"];
-
-    NSLog(@"Getting current user photo...");
+//    CGFloat outgoingDiameter = self.collectionView.collectionViewLayout.outgoingAvatarViewSize.width;
     
-    [file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-        if (!error) {
-            
-            UIImage *img = [UIImage imageWithData:data];
-            
-            NSLog(@"image.size.width: %f, image.size.height: %f", img.size.width, img.size.height);
-            NSLog(@"%f", outgoingDiameter);
-            
-//            UIImage *senderAvatar = [self blendImagesWithBackground:[UIImage imageNamed:@"ci_profile_mask_alpha"] foreground:[UIImage imageWithData:data]];
-            
-//            UIImage *senderAvatar = [UIImage imageNamed:@"ci_profile_mask_alpha"];
-            
-            UIImage *senderAvatar = [UIImage imageWithData:data];
-            
-            UIImage *senderImage = [JSQMessagesAvatarFactory avatarWithImage:senderAvatar
-                                                                diameter:outgoingDiameter];
-            
-            NSLog(@"image.size.width: %f, image.size.height: %f", senderImage.size.width, senderImage.size.height);
-            
-            NSLog(@"Getting current user photo... done");
-
-            [self.recipient fetchIfNeeded];
-            
-            PFFile *file = self.recipient[@"Photo"];
-            
-            NSLog(@"Getting matched user photo...");
-            
-            [file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-                if (!error) {
-                    
-                    NSLog(@"Getting matched user photo... done");
-            
-                    UIImage *recipientImage = [JSQMessagesAvatarFactory avatarWithImage:[UIImage imageWithData:data]
-                                                                       diameter:outgoingDiameter];
-                    
-                    
-            
-                    self.avatars = @{ self.sender : senderImage,
-                                      self.recipient.username: recipientImage};
-                    
-                    
-                    
-                }
-            }];
-        }
-    }];
-    
-
-    
-//    self.title = @"JSQMessages";
+//    PFFile *file = [PFUser currentUser][@"Photo"];
+//
+//    NSLog(@"Getting current user photo...");
 //    
-//    self.sender = @"Jesse Squires";
-//    
-//    [self setupTestModel];
+//    [file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+//        if (!error) {
+//            
+//            UIImage *img = [UIImage imageWithData:data];
+//            
+//            NSLog(@"image.size.width: %f, image.size.height: %f", img.size.width, img.size.height);
+//            NSLog(@"%f", outgoingDiameter);
+//            
+////            UIImage *senderAvatar = [self blendImagesWithBackground:[UIImage imageNamed:@"ci_profile_mask_alpha"] foreground:[UIImage imageWithData:data]];
+//            
+////            UIImage *senderAvatar = [UIImage imageNamed:@"ci_profile_mask_alpha"];
+//            
+//            UIImage *senderAvatar = [UIImage imageWithData:data];
+//            
+//            UIImage *senderImage = [JSQMessagesAvatarFactory avatarWithImage:senderAvatar
+//                                                                diameter:outgoingDiameter];
+//            
+//            NSLog(@"image.size.width: %f, image.size.height: %f", senderImage.size.width, senderImage.size.height);
+//            
+//            NSLog(@"Getting current user photo... done");
+//
+//            [self.recipient fetchIfNeeded];
+//            
+//            PFFile *file = self.recipient[@"Photo"];
+//            
+//            NSLog(@"Getting matched user photo...");
+//            
+//            [file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+//                if (!error) {
+//                    
+//                    NSLog(@"Getting matched user photo... done");
+//            
+//                    UIImage *recipientImage = [JSQMessagesAvatarFactory avatarWithImage:[UIImage imageWithData:data]
+//                                                                       diameter:outgoingDiameter];
+//                    
+//                    
+//            
+//                    self.avatars = @{ self.sender : senderImage,
+//                                      self.recipient.username: recipientImage};
+//                    
+//                    
+//                    
+//                }
+//            }];
+//        }
+//    }];
     
-    /**
-     *  Remove camera button since media messages are not yet implemented
-     */
-        self.inputToolbar.contentView.leftBarButtonItem = nil;
+    JSQMessagesBubbleImageFactory *bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
 
+    bubbleImageOutgoing = [bubbleFactory
+                                    incomingMessagesBubbleImageWithColor:kTraffleMainColor];
     
-    /**
-     *  Create bubble images.
-     *
-     *  Be sure to create your avatars one time and reuse them for good performance.
-     *
-     */
-    self.outgoingBubbleImageView = [JSQMessagesBubbleImageFactory
-                                    outgoingMessageBubbleImageViewWithColor:kTraffleMainColor];
-    
-    self.incomingBubbleImageView = [JSQMessagesBubbleImageFactory
-                                    incomingMessageBubbleImageViewWithColor:[UIColor whiteColor]];
-    
-//    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"typing"]
-//                                                                              style:UIBarButtonItemStyleBordered
-//                                                                             target:self
-//                                                                             action:@selector(receiveMessagePressed:)];
-    
-    
+    bubbleImageIncoming = [bubbleFactory
+                                    incomingMessagesBubbleImageWithColor:[UIColor whiteColor]];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    /**
-     *  Enable/disable springy bubbles, default is YES.
-     *  For best results, toggle from `viewDidAppear:`
-     */
-    self.collectionView.collectionViewLayout.springinessEnabled = NO;
+    self.collectionView.collectionViewLayout.springinessEnabled = YES;
+    timer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(loadMessages) userInfo:nil repeats:YES];
 }
 
-
-
-#pragma mark - Actions
-
-- (void)receiveMessagePressed:(UIBarButtonItem *)sender
+- (void)addMessage:(PFObject *)object
 {
-    /**
-     *  The following is simply to simulate received messages for the demo.
-     *  Do not actually do this.
-     */
-    
-    
-    /**
-     *  Show the tpying indicator
-     */
-    self.showTypingIndicator = !self.showTypingIndicator;
-    
-    JSQMessage *copyMessage = [[self.messages lastObject] copy];
-    
-    if (!copyMessage) {
-        return;
+    PFUser *user = object[@"sender"];
+    [users addObject:user];
+
+    if (object[@"picture"] == nil)
+    {
+        JSQMessage *message = [[JSQMessage alloc] initWithSenderId:user.objectId senderDisplayName:user[@"Name"]
+                                                              date:object.createdAt text:object[@"text"]];
+        [messages addObject:message];
+//        [self.collectionView reloadData]; //FIXME
     }
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        
-        NSMutableArray *copyAvatars = [[self.avatars allKeys] mutableCopy];
-        [copyAvatars removeObject:self.sender];
-        
-        PFQuery *query = [PFUser query];
-        PFUser *cuser = (PFUser*)[query getObjectWithId:@"ABJavePdyc"];
-        
-        copyMessage.sender = cuser.username;
-        
-        NSLog(@"Copy message: %@ %@", copyMessage, copyMessage.sender);
-        
-        /**
-         *  This you should do upon receiving a message:
-         *
-         *  1. Play sound (optional)
-         *  2. Add new id<JSQMessageData> object to your data source
-         *  3. Call `finishReceivingMessage`
-         */
-        [JSQSystemSoundPlayer jsq_playMessageReceivedSound];
-        [self.messages addObject:copyMessage];
-        [self finishReceivingMessage];
-    });
+
+    if (object[@"picture"] != nil)
+    {
+        JSQPhotoMediaItem *mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:nil];
+        mediaItem.appliesMediaViewMaskAsOutgoing = ![user.objectId isEqualToString:[PFUser currentUser].objectId];
+        JSQMessage *message = [[JSQMessage alloc] initWithSenderId:user.objectId senderDisplayName:user[@"Name"] date:object.createdAt media:mediaItem];
+        [messages addObject:message];
+
+        PFFile *filePicture = object[@"picture"];
+        [filePicture getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error) {
+            if (error == nil) {
+                mediaItem.image = [UIImage imageWithData:imageData];
+                [self.collectionView reloadData];
+            }
+        }];
+    }
 }
 
-#pragma mark - JSQMessagesViewController method overrides
-
-- (void)didPressSendButton:(UIButton *)button
-           withMessageText:(NSString *)text
-                    sender:(NSString *)sender
-                      date:(NSDate *)date
+- (void)loadMessages
 {
-//    NSLog(@"Text: '%@'", text);
-    /**
-     *  Sending a message. Your implementation of this method should do *at least* the following:
-     *
-     *  1. Play sound (optional)
-     *  2. Add new id<JSQMessageData> object to your data source
-     *  3. Call `finishSendingMessage`
-     */
-    
-    button.enabled = NO;
-    
-    [JSQSystemSoundPlayer jsq_playMessageSentSound];
-    
-    Message *message = [[Message alloc] initWithText:text sender:[PFUser currentUser] recipient:self.recipient conversation:self.conversation];
-    
-    NSLog(@"Saving message");
-    
-    [message saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-        if (succeeded) {
-            JSQMessage *msg  = [[JSQMessage alloc] initWithText:message.text sender:message.sender date:message.date];
-            [self.messages addObject:msg];
-            
-            [self.conversation incrementKey:@"messageCount"];
-            [self.conversation saveInBackground];
-            
-            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
-                                  [NSString stringWithFormat:@"New message from %@", [PFUser currentUser][@"Name"]], @"alert",
-                                  @"Increment", @"badge",
-                                  @"message", @"type",
-                                  @1, @"content-available",
-                                  [NSString stringWithFormat:@"%@", [PFUser currentUser].objectId], @"from",
-                                  text, @"text",
-                                  nil];
-            
-            // Now we’ll need to query all saved installations to find those of our recipients
-            // Create our Installation query using the self.recipients array we already have
-            PFQuery *pushQuery = [PFInstallation query];
-            [pushQuery whereKey:@"installationUser" equalTo:self.recipient.objectId];
-            
-            // Send push notification to our query
-            PFPush *push = [[PFPush alloc] init];
-            [push setQuery:pushQuery];
-            [push setData:data];
-            [push sendPushInBackground];
-            
-            NSLog(@"Added message '%@', %@, %@", message.text, message.sender, message.date);
-            
-            NSData *msgData = [NSKeyedArchiver archivedDataWithRootObject:self.messages];
-            [[NSUserDefaults standardUserDefaults] setObject:msgData forKey:self.conversation.objectId];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
-            [self finishSendingMessage];
-            button.enabled = YES;
-            
-        } else {
-            NSLog(@"Error: %@", [error localizedDescription]);
-        }
-    }];
-    
-//    JSQMessage *message2 = [[JSQMessage alloc] initWithText:@"test" sender:@"Bob" date:[[NSDate alloc] init]];
-//    [self.messages addObject:message2];
-    
-//    [self finishSendingMessage];
-    
-    
+    if (isLoading == NO)
+    {
+        isLoading = YES;
+        JSQMessage *message_last = [messages lastObject];
+        
+        /* Check if there is an already existing conversation between users */
+        
+        PFQuery *query = [PFQuery queryWithClassName:@"Message"];
+        [query whereKey:@"conversation" equalTo:self.conversation];
+        if (message_last != nil) [query whereKey:@"createdAt" greaterThan:message_last.date];
+        [query includeKey:@"sender"];
+        [query includeKey:@"recipient"];
+        [query orderByDescending:@"createdAt"];
+        [query setLimit:50];
+        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
+         {
+             if (error == nil)
+             {
+                 self.automaticallyScrollsToMostRecentMessage = NO;
+                 for (PFObject *object in [objects reverseObjectEnumerator])
+                 {
+                     [self addMessage:object];
+                 }
+                 if ([objects count] != 0)
+                 {
+                     [self finishReceivingMessage];
+                     [self scrollToBottomAnimated:NO];
+                 }
+                 self.automaticallyScrollsToMostRecentMessage = YES;
+                 
+                 // recent unread count
+                 PFQuery *query = [PFQuery queryWithClassName:@"Unread"];
+                 [query whereKey:@"conversation" equalTo:self.conversation];
+                 [query whereKey:@"user" equalTo:[PFUser currentUser]];
+                 [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                     
+                     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+                     if (currentInstallation.badge > [object[@"count"] intValue]) {
+                         currentInstallation.badge -= [object[@"count"] intValue];
+                     } else {
+                         currentInstallation.badge = 0;
+                     }
+                     [currentInstallation saveEventually];
+                     
+                     object[@"count"] = @0;
+                     [object saveEventually];
+                 }];
+             }
+             isLoading = NO;
+             [self.progressHud hide:YES];
+         }];
+    }
 }
+
+- (id<JSQMessageBubbleImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView
+             messageBubbleImageDataForItemAtIndexPath:(NSIndexPath *)indexPath
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+    JSQMessage *message = messages[indexPath.item];
+    if ([message.senderId isEqualToString:[PFUser currentUser].objectId])
+    {
+        return bubbleImageOutgoing;
+    }
+    return bubbleImageIncoming;
+}
+
+- (id<JSQMessageAvatarImageDataSource>)collectionView:(JSQMessagesCollectionView *)collectionView
+                    avatarImageDataForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    PFUser *user = users[indexPath.item];
+    if (avatars[user.objectId] == nil)
+    {
+        PFFile *fileThumbnail = user[@"Photo"];
+        [fileThumbnail getDataInBackgroundWithBlock:^(NSData *imageData, NSError *error)
+         {
+             if (error == nil)
+             {
+                 avatars[user.objectId] = [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageWithData:imageData] diameter:30.0];
+                 [self.collectionView reloadData];
+             }
+         }];
+        return avatarImageBlank;
+    }
+    else return avatars[user.objectId];
+}
+
+- (void)sendMessage:(NSString *)text Picture:(UIImage *)picture
+{
+    PFFile *filePicture = nil;
+    if (picture != nil)
+    {
+        filePicture = [PFFile fileWithName:@"picture.jpg" data:UIImageJPEGRepresentation(picture, 0.6)];
+        [filePicture saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+         {
+//             if (error != nil) [ProgressHUD showError:@"Picture save error."];
+         }];
+    }
+
+    PFObject *object = [PFObject objectWithClassName:@"Message"];
+    object[@"sender"] = [PFUser currentUser];
+    object[@"recipient"] = self.recipient;
+    object[@"text"] = text;
+    object[@"conversation"] = self.conversation;
+    NSLog([PFUser currentUser].objectId, self.recipient.objectId, object[@"text"], self.conversation.objectId);
+    if (filePicture != nil) object[@"picture"] = filePicture;
+    [object saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+     {
+         if (error == nil)
+         {
+             [JSQSystemSoundPlayer jsq_playMessageSentSound];
+             [self loadMessages];
+             
+             PFQuery * query = [PFQuery queryWithClassName:@"Unread"];
+             [query whereKey:@"user" equalTo:self.recipient];
+             [query whereKey:@"conversation" equalTo:self.conversation];
+             [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+                 if (!error) {
+                     [object incrementKey:@"count"];
+                     [object saveEventually];
+                 } else {
+                     PFObject *new = [PFObject objectWithClassName:@"Unread"];
+                     new[@"conversation"] = self.conversation;
+                     new[@"user"] = self.recipient;
+                     new[@"count"] = @1;
+                     [new saveEventually];
+                 }
+             }];
+         }
+//         else [ProgressHUD showError:@"Network error."];;
+     }];
+
+    [self sendPushNotification:text];
+
+    [self finishSendingMessage];
+}
+
+- (void)didPressSendButton:(UIButton *)button withMessageText:(NSString *)text senderId:(NSString *)senderId senderDisplayName:(NSString *)senderDisplayName date:(NSDate *)date
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+    [self sendMessage:text Picture:nil];
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+- (void)didPressAccessoryButton:(UIButton *)sender
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+{
+    UIActionSheet *action = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil
+                                               otherButtonTitles:@"Take photo", @"Choose existing photo", nil];
+    [action showInView:self.view];
+}
+
+- (void)sendPushNotification:(NSString *)text
+{
+    PFQuery *queryInstallation = [PFInstallation query];
+    [queryInstallation whereKey:@"installationUser" equalTo:self.recipient.objectId];
+    
+    NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
+                          [NSString stringWithFormat:@"New message from %@", [PFUser currentUser][@"Name"]], @"alert",
+                          @"Increment", @"badge",
+                          @"message", @"type",
+                          @1, @"content-available",
+                          [NSString stringWithFormat:@"%@", [PFUser currentUser].objectId], @"from",
+                          [NSString stringWithFormat:@"%@", self.conversation.objectId], @"conversation",
+                          text, @"text",
+                          nil];
+    
+    PFPush *push = [[PFPush alloc] init];
+    [push setQuery:queryInstallation];
+    [push setMessage:text];
+    [push setData:data];
+    [push sendPushInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+     {
+         if (error != nil)
+         {
+             NSLog(@"SendPushNotification send error.");
+         }
+     }];
+}
+
+//- (void)didPressSendButton:(UIButton *)button
+//           withMessageText:(NSString *)text
+//                    sender:(NSString *)sender
+//                      date:(NSDate *)date
+//{
+////    NSLog(@"Text: '%@'", text);
+//    /**
+//     *  Sending a message. Your implementation of this method should do *at least* the following:
+//     *
+//     *  1. Play sound (optional)
+//     *  2. Add new id<JSQMessageData> object to your data source
+//     *  3. Call `finishSendingMessage`
+//     */
+//    
+//    button.enabled = NO;
+//    
+//    [JSQSystemSoundPlayer jsq_playMessageSentSound];
+//    
+//    Message *message = [[Message alloc] initWithText:text sender:[PFUser currentUser] recipient:self.recipient conversation:self.conversation];
+//    
+//    NSLog(@"Saving message");
+//    
+//    [message saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+//        if (succeeded) {
+//            JSQMessage *msg  = [[JSQMessage alloc] initWithText:message.text sender:message.sender date:message.date];
+//            [self.messages addObject:msg];
+//            
+//            [self.conversation incrementKey:@"messageCount"];
+//            [self.conversation saveInBackground];
+//            
+//            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                  [NSString stringWithFormat:@"New message from %@", [PFUser currentUser][@"Name"]], @"alert",
+//                                  @"Increment", @"badge",
+//                                  @"message", @"type",
+//                                  @1, @"content-available",
+//                                  [NSString stringWithFormat:@"%@", [PFUser currentUser].objectId], @"from",
+//                                  text, @"text",
+//                                  nil];
+//            
+//            // Now we’ll need to query all saved installations to find those of our recipients
+//            // Create our Installation query using the self.recipients array we already have
+//            PFQuery *pushQuery = [PFInstallation query];
+//            [pushQuery whereKey:@"installationUser" equalTo:self.recipient.objectId];
+//            
+//            // Send push notification to our query
+//            PFPush *push = [[PFPush alloc] init];
+//            [push setQuery:pushQuery];
+//            [push setData:data];
+//            [push sendPushInBackground];
+//            
+//            NSLog(@"Added message '%@', %@, %@", message.text, message.sender, message.date);
+//            
+//            NSData *msgData = [NSKeyedArchiver archivedDataWithRootObject:self.messages];
+//            [[NSUserDefaults standardUserDefaults] setObject:msgData forKey:self.conversation.objectId];
+//            [[NSUserDefaults standardUserDefaults] synchronize];
+//            
+//            [self finishSendingMessage];
+//            button.enabled = YES;
+//            
+//        } else {
+//            NSLog(@"Error: %@", [error localizedDescription]);
+//        }
+//    }];
+//    
+////    JSQMessage *message2 = [[JSQMessage alloc] initWithText:@"test" sender:@"Bob" date:[[NSDate alloc] init]];
+////    [self.messages addObject:message2];
+//    
+////    [self finishSendingMessage];
+//    
+//    
+//}
 
 //- (void)didPressAccessoryButton:(UIButton *)sender
 //{
@@ -467,42 +524,41 @@
 
 - (id<JSQMessageData>)collectionView:(JSQMessagesCollectionView *)collectionView messageDataForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.messages objectAtIndex:indexPath.item];
+    return [messages objectAtIndex:indexPath.item];
 }
 
-- (UIImageView *)collectionView:(JSQMessagesCollectionView *)collectionView bubbleImageViewForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    /**
-     *  You may return nil here if you do not want bubbles.
-     *  In this case, you should set the background color of your collection view cell's textView.
-     */
-    
-    /**
-     *  Reuse created bubble images, but create new imageView to add to each cell
-     *  Otherwise, each cell would be referencing the same imageView and bubbles would disappear from cells
-     */
-    
-    NSLog(@"bubble: %ld", (long)indexPath.row);
-    
-    JSQMessage *message = [self.messages objectAtIndex:indexPath.item];
-    
-    
-    
-    if ([message.sender isEqualToString:self.sender]) {
-        return [[UIImageView alloc] initWithImage:self.outgoingBubbleImageView.image
-                                 highlightedImage:self.outgoingBubbleImageView.highlightedImage];
-    }
-    
-    return [[UIImageView alloc] initWithImage:self.incomingBubbleImageView.image
-                             highlightedImage:self.incomingBubbleImageView.highlightedImage];
-}
+//- (UIImageView *)collectionView:(JSQMessagesCollectionView *)collectionView bubbleImageViewForItemAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    /**
+//     *  You may return nil here if you do not want bubbles.
+//     *  In this case, you should set the background color of your collection view cell's textView.
+//     */
+//    
+//    /**
+//     *  Reuse created bubble images, but create new imageView to add to each cell
+//     *  Otherwise, each cell would be referencing the same imageView and bubbles would disappear from cells
+//     */
+//    
+//    NSLog(@"bubble: %ld", (long)indexPath.row);
+//    
+//    JSQMessage *message = [self.messages objectAtIndex:indexPath.item];
+//    
+//    
+//    
+//    if ([message.sender isEqualToString:self.sender]) {
+//        return [[UIImageView alloc] initWithImage:self.outgoingBubbleImageView.image
+//                                 highlightedImage:self.outgoingBubbleImageView.highlightedImage];
+//    }
+//    
+//    return [[UIImageView alloc] initWithImage:self.incomingBubbleImageView.image
+//                             highlightedImage:self.incomingBubbleImageView.highlightedImage];
+//}
 
 #pragma mark - UICollectionView DataSource
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    NSLog(@"rows: %lu", (unsigned long)[self.messages count]);
-    return [self.messages count];
+    return [messages count];
 }
 
 - (UICollectionViewCell *)collectionView:(JSQMessagesCollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -526,11 +582,9 @@
      *  Instead, override the properties you want on `self.collectionView.collectionViewLayout` from `viewDidLoad`
      */
     
-    NSLog(@"Cell for %d", indexPath.item);
+    JSQMessage *msg = [messages objectAtIndex:indexPath.item];
     
-    JSQMessage *msg = [self.messages objectAtIndex:indexPath.item];
-    
-    if ([msg.sender isEqualToString:self.sender]) {
+    if ([msg.senderId isEqualToString:[PFUser currentUser].objectId]) {
         cell.textView.textColor = [UIColor whiteColor];
         cell.textView.linkTextAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor], NSUnderlineStyleAttributeName: [NSNumber numberWithInt:NSUnderlineStyleSingle]};
     }
@@ -545,34 +599,34 @@
     return cell;
 }
 
-- (UIImageView *)collectionView:(JSQMessagesCollectionView *)collectionView avatarImageViewForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    /**
-     *  Return `nil` here if you do not want avatars.
-     *  If you do return `nil`, be sure to do the following in `viewDidLoad`:
-     *
-     *  self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeZero;
-     *  self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero;
-     *
-     *  It is possible to have only outgoing avatars or only incoming avatars, too.
-     */
-    
-    /**
-     *  Reuse created avatar images, but create new imageView to add to each cell
-     *  Otherwise, each cell would be referencing the same imageView and avatars would disappear from cells
-     *
-     *  Note: these images will be sized according to these values:
-     *
-     *  self.collectionView.collectionViewLayout.incomingAvatarViewSize
-     *  self.collectionView.collectionViewLayout.outgoingAvatarViewSize
-     *
-     *  Override the defaults in `viewDidLoad`
-     */
-    JSQMessage *message = [self.messages objectAtIndex:indexPath.item];
-    
-    UIImage *avatarImage = [self.avatars objectForKey:message.sender];
-    return [[UIImageView alloc] initWithImage:avatarImage];
-}
+//- (UIImageView *)collectionView:(JSQMessagesCollectionView *)collectionView avatarImageViewForItemAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    /**
+//     *  Return `nil` here if you do not want avatars.
+//     *  If you do return `nil`, be sure to do the following in `viewDidLoad`:
+//     *
+//     *  self.collectionView.collectionViewLayout.incomingAvatarViewSize = CGSizeZero;
+//     *  self.collectionView.collectionViewLayout.outgoingAvatarViewSize = CGSizeZero;
+//     *
+//     *  It is possible to have only outgoing avatars or only incoming avatars, too.
+//     */
+//    
+//    /**
+//     *  Reuse created avatar images, but create new imageView to add to each cell
+//     *  Otherwise, each cell would be referencing the same imageView and avatars would disappear from cells
+//     *
+//     *  Note: these images will be sized according to these values:
+//     *
+//     *  self.collectionView.collectionViewLayout.incomingAvatarViewSize
+//     *  self.collectionView.collectionViewLayout.outgoingAvatarViewSize
+//     *
+//     *  Override the defaults in `viewDidLoad`
+//     */
+//    JSQMessage *message = [self.messages objectAtIndex:indexPath.item];
+//    
+//    UIImage *avatarImage = [self.avatars objectForKey:message.senderId];
+//    return [[UIImageView alloc] initWithImage:avatarImage];
+//}
 
 - (NSAttributedString *)collectionView:(JSQMessagesCollectionView *)collectionView attributedTextForCellTopLabelAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -583,7 +637,7 @@
      *  Show a timestamp for every 3rd message
      */
     if (indexPath.item % 3 == 0) {
-        JSQMessage *message = [self.messages objectAtIndex:indexPath.item];
+        JSQMessage *message = [messages objectAtIndex:indexPath.item];
         NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
         paragraphStyle.alignment = NSTextAlignmentCenter;
         NSDictionary *dateAttrs = @{ NSFontAttributeName : [UIFont fontWithName:@"AvenirNextCondensed-DemiBold" size:12.0f],
@@ -655,24 +709,45 @@
 }
 
 
+//- (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
+//                   layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForMessageBubbleTopLabelAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    /**
+//     *  iOS7-style sender name labels
+//     */
+//    JSQMessage *currentMessage = [self.messages objectAtIndex:indexPath.item];
+//    if ([[currentMessage senderId] isEqualToString:self.senderId]) {
+//        return 0.0f;
+//    }
+//    
+//    if (indexPath.item - 1 > 0) {
+//        JSQMessage *previousMessage = [self.messages objectAtIndex:indexPath.item - 1];
+//        if ([[previousMessage senderId] isEqualToString:[currentMessage senderId]]) {
+//            return 0.0f;
+//        }
+//    }
+//    
+//    return kJSQMessagesCollectionViewCellLabelHeightDefault;
+//}
+
 - (CGFloat)collectionView:(JSQMessagesCollectionView *)collectionView
                    layout:(JSQMessagesCollectionViewFlowLayout *)collectionViewLayout heightForMessageBubbleTopLabelAtIndexPath:(NSIndexPath *)indexPath
+//-------------------------------------------------------------------------------------------------------------------------------------------------
 {
-    /**
-     *  iOS7-style sender name labels
-     */
-    JSQMessage *currentMessage = [self.messages objectAtIndex:indexPath.item];
-    if ([[currentMessage sender] isEqualToString:self.sender]) {
-        return 0.0f;
+    JSQMessage *message = messages[indexPath.item];
+    if ([message.senderId isEqualToString:[PFUser currentUser].objectId])
+    {
+        return 0;
     }
     
-    if (indexPath.item - 1 > 0) {
-        JSQMessage *previousMessage = [self.messages objectAtIndex:indexPath.item - 1];
-        if ([[previousMessage sender] isEqualToString:[currentMessage sender]]) {
-            return 0.0f;
+    if (indexPath.item - 1 > 0)
+    {
+        JSQMessage *previousMessage = messages[indexPath.item-1];
+        if ([previousMessage.senderId isEqualToString:message.senderId])
+        {
+            return 0;
         }
     }
-    
     return kJSQMessagesCollectionViewCellLabelHeightDefault;
 }
 
@@ -682,81 +757,81 @@
     return 0.0f;
 }
 
-- (void)collectionView:(JSQMessagesCollectionView *)collectionView
-                header:(JSQMessagesLoadEarlierHeaderView *)headerView didTapLoadEarlierMessagesButton:(UIButton *)sender
-{
-    NSLog(@"Load earlier messages!");
-    
-    __block id chatvc = self;
-    dispatch_queue_t messageQueue = dispatch_queue_create("Message Queue",NULL);
-    
-    NSUInteger numberOfMessagesToLoad;
-    NSInteger numberOfMessagesLeft = [self.messageObjects count]-[self.messages count];
-    NSLog(@"numberOfMessagesLeft: %lu", (unsigned long)numberOfMessagesLeft);
-    numberOfMessagesToLoad = ((int)numberOfMessagesLeft - 5) >= 0? 5: numberOfMessagesLeft;
-    NSLog(@"numberOfMessagesToLoad: %lu", (unsigned long)numberOfMessagesToLoad);
-
-    
-    for (PFObject *msg in [[self.messageObjects subarrayWithRange:NSMakeRange(numberOfMessagesLeft-numberOfMessagesToLoad, numberOfMessagesToLoad)] reverseObjectEnumerator]) {
-        
-        dispatch_async(messageQueue, ^{
-            
-            [chatvc createMessageAsync:msg];
-            
-        });
-    }
-}
-
-- (void)createMessageAsync:(PFObject *)msg
-{
-    [msg fetchIfNeeded];
-    NSLog(@"msg.createdAt: %@", msg.createdAt);
-    [msg[@"sender"] fetchIfNeeded];
-    NSLog(@"Sender: %@", msg[@"sender"]);
-    
-    JSQMessage *message = [[JSQMessage alloc] initWithText:msg[@"text"] sender:((PFUser *)msg[@"sender"]).username date:msg.createdAt];
-    
-    NSLock *arrayLock = [[NSLock alloc] init];
-    
-    /* NSMutableArray is not thread-safe */
-    [arrayLock lock];
-    
-    NSLog(@"Messages: %lu", (unsigned long)[self.messages count]);
-    
-    if (!self.messages) {
-        self.messages = [[NSMutableArray alloc] init];
-    }
-    
-    [self.messages addObject:message];
-    
-    NSLog(@"Array size: %lu", (unsigned long)[self.messages count]);
-    [arrayLock unlock];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // Update the UI
-        NSLog(@"Message retrieved, refreshing view...");
-        
-        NSLog(@"Ready to present messages: %@", self.messages);
-        
-        [self finishReceivingMessage];
-        
-//        [self.collectionView reloadData];
+//- (void)collectionView:(JSQMessagesCollectionView *)collectionView
+//                header:(JSQMessagesLoadEarlierHeaderView *)headerView didTapLoadEarlierMessagesButton:(UIButton *)sender
+//{
+//    NSLog(@"Load earlier messages!");
+//    
+//    __block id chatvc = self;
+//    dispatch_queue_t messageQueue = dispatch_queue_create("Message Queue",NULL);
+//    
+//    NSUInteger numberOfMessagesToLoad;
+//    NSInteger numberOfMessagesLeft = [self.messageObjects count]-[self.messages count];
+//    NSLog(@"numberOfMessagesLeft: %lu", (unsigned long)numberOfMessagesLeft);
+//    numberOfMessagesToLoad = ((int)numberOfMessagesLeft - 5) >= 0? 5: numberOfMessagesLeft;
+//    NSLog(@"numberOfMessagesToLoad: %lu", (unsigned long)numberOfMessagesToLoad);
+//
+//    
+//    for (PFObject *msg in [[self.messageObjects subarrayWithRange:NSMakeRange(numberOfMessagesLeft-numberOfMessagesToLoad, numberOfMessagesToLoad)] reverseObjectEnumerator]) {
 //        
-//        [self scrollToBottomAnimated:YES];
-        
-        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.messages];
-        [[NSUserDefaults standardUserDefaults] setObject:data forKey:self.conversation.objectId];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        
-    });
-    
-}
+//        dispatch_async(messageQueue, ^{
+//            
+//            [chatvc createMessageAsync:msg];
+//            
+//        });
+//    }
+//}
+
+//- (void)createMessageAsync:(PFObject *)msg
+//{
+//    [msg fetchIfNeeded];
+//    NSLog(@"msg.createdAt: %@", msg.createdAt);
+//    [msg[@"sender"] fetchIfNeeded];
+//    NSLog(@"Sender: %@", msg[@"sender"]);
+//    
+//    JSQMessage *message = [[JSQMessage alloc] initWithText:msg[@"text"] sender:((PFUser *)msg[@"sender"]).username date:msg.createdAt];
+//    
+//    NSLock *arrayLock = [[NSLock alloc] init];
+//    
+//    /* NSMutableArray is not thread-safe */
+//    [arrayLock lock];
+//    
+//    NSLog(@"Messages: %lu", (unsigned long)[self.messages count]);
+//    
+//    if (!self.messages) {
+//        self.messages = [[NSMutableArray alloc] init];
+//    }
+//    
+//    [self.messages addObject:message];
+//    
+//    NSLog(@"Array size: %lu", (unsigned long)[self.messages count]);
+//    [arrayLock unlock];
+//    
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        // Update the UI
+//        NSLog(@"Message retrieved, refreshing view...");
+//        
+//        NSLog(@"Ready to present messages: %@", self.messages);
+//        
+//        [self finishReceivingMessage];
+//        
+////        [self.collectionView reloadData];
+////        
+////        [self scrollToBottomAnimated:YES];
+//        
+//        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.messages];
+//        [[NSUserDefaults standardUserDefaults] setObject:data forKey:self.conversation.objectId];
+//        [[NSUserDefaults standardUserDefaults] synchronize];
+//        
+//    });
+//    
+//}
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [[self navigationController] setNavigationBarHidden:YES animated:YES];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
+    [timer invalidate];
     [super viewWillDisappear:animated];
 }
 
@@ -767,7 +842,7 @@
     [self.progressHud setLabelText:@"Loading..."];
     [self.progressHud setDimBackground:YES];
     
-    NSLog(@"[self.messages count]: %d", [self.messages count]);
+//    NSLog(@"[self.messages count]: %d", [self.messages count]);
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(broughtToForeground) name:UIApplicationDidBecomeActiveNotification object:nil];
 
@@ -780,86 +855,89 @@
     
     self.navigationItem.leftBarButtonItem.tintColor = kTraffleMainColor;
     
-    /* Check if there is an already existing conversation between users */
-    
-    self.conversation = nil;
-    
-    PFQuery * query = [PFQuery queryWithClassName:@"Conversation"];
-    [query whereKey:@"participants" containsAllObjectsInArray:[NSArray arrayWithObjects:[PFUser currentUser], self.recipient, nil]];
-    [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-        if(!error) {
-            self.conversation = object;
-            
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotificationReceived:) name:@"pushNotification" object:nil];
-        
-            CLS_LOG(@"Conversation %@ exists, retrieveing its messages...", self.conversation.objectId);
-            PFQuery *messageQuery = [PFQuery queryWithClassName:@"Message"];
-//            messageQuery.cachePolicy = kPFCachePolicyCacheOnly;
-            [messageQuery whereKey:@"conversation" equalTo:self.conversation];
-            [messageQuery orderByAscending:@"createdAt"];
-            [messageQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-                if (error == nil) {
-                    NSLog(@"Array capacity: %lu", (unsigned long)[objects count]);
-                    self.messageObjects = [[NSMutableArray alloc] initWithArray:objects];
-                    
-                    dispatch_queue_t messageQueue = dispatch_queue_create("Message Queue",NULL);
-                    
-                    __block id chatvc = self;
-                    
-//                    NSLog(@"[self.messageObjects count]: %@", [self.messageObjects subarrayWithRange:NSMakeRange([self.messageObjects count]-5, 5)]);
-                    
-
-//                    for (PFObject *msg in [[self.messageObjects subarrayWithRange:NSMakeRange([self.messageObjects count]-5, 5)] reverseObjectEnumerator]) {
-                    
-                    NSMutableArray *storedMessages = [[NSMutableArray alloc] initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:self.conversation.objectId]]];
-                    
-                    CLS_LOG(@"%d %d %d", [objects count], [storedMessages count], [PFInstallation currentInstallation].badge);
-                    
-                    if ([PFInstallation currentInstallation].badge < ([objects count] - [storedMessages count])) {
-                        [PFInstallation currentInstallation].badge = 0;
-                    } else {
-                        [PFInstallation currentInstallation].badge -= ([objects count] - [storedMessages count]);
-                    }
-                    [[PFInstallation currentInstallation] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                        if (!error) {
-                            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[PFInstallation currentInstallation].badge];
-                        }
-                    }];
-                    
-                    self.messages = [[NSMutableArray alloc] initWithArray:storedMessages];
-
-                    if ([objects count] == [storedMessages count]) {
-                        self.messages = [[NSMutableArray alloc] initWithArray:storedMessages];
-//                        [self.collectionView reloadData];
-//                        [self scrollToBottomAnimated:NO];
-                        [self finishReceivingMessage];
-                        [self.progressHud hide:YES];
-                        self.collectionView.collectionViewLayout.springinessEnabled = YES;
-                    } else {
-
-                        [self.progressHud hide:YES];
-                        for (PFObject *msg in [self.messageObjects subarrayWithRange:NSMakeRange([storedMessages count], [self.messageObjects count] - [storedMessages count])]) {
-                        
-                            dispatch_async(messageQueue, ^{
-                                
-                                CLS_LOG("Creating new message: %@", msg);
-                                
-                                [chatvc createMessageAsync:msg];
-                            
-
-                            });
-                        }
-                    }
-                } else {
-                    NSLog(@"Error: %@", [error localizedDescription]);
-                }
-                
-            }];
-        }
-        
-    }];
+//    /* Check if there is an already existing conversation between users */
+//    
+//    self.conversation = nil;
+//    
+//    PFQuery * query = [PFQuery queryWithClassName:@"Conversation"];
+//    [query whereKey:@"participants" containsAllObjectsInArray:[NSArray arrayWithObjects:[PFUser currentUser], self.recipient, nil]];
+//    [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+//        if(!error) {
+//            self.conversation = object;
+//            
+//            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotificationReceived:) name:@"pushNotification" object:nil];
+//        
+//            CLS_LOG(@"Conversation %@ exists, retrieveing its messages...", self.conversation.objectId);
+//            PFQuery *messageQuery = [PFQuery queryWithClassName:@"Message"];
+////            messageQuery.cachePolicy = kPFCachePolicyCacheOnly;
+//            [messageQuery whereKey:@"conversation" equalTo:self.conversation];
+//            [messageQuery orderByAscending:@"createdAt"];
+//            [messageQuery findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+//                if (error == nil) {
+//                    NSLog(@"Array capacity: %lu", (unsigned long)[objects count]);
+//                    self.messageObjects = [[NSMutableArray alloc] initWithArray:objects];
+//                    
+//                    dispatch_queue_t messageQueue = dispatch_queue_create("Message Queue",NULL);
+//                    
+//                    __block id chatvc = self;
+//                    
+////                    NSLog(@"[self.messageObjects count]: %@", [self.messageObjects subarrayWithRange:NSMakeRange([self.messageObjects count]-5, 5)]);
+//                    
+//
+////                    for (PFObject *msg in [[self.messageObjects subarrayWithRange:NSMakeRange([self.messageObjects count]-5, 5)] reverseObjectEnumerator]) {
+//                    
+//                    NSMutableArray *storedMessages = [[NSMutableArray alloc] initWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:self.conversation.objectId]]];
+//                    
+//                    CLS_LOG(@"%d %d %d", [objects count], [storedMessages count], [PFInstallation currentInstallation].badge);
+//                    
+//                    if ([PFInstallation currentInstallation].badge < ([objects count] - [storedMessages count])) {
+//                        [PFInstallation currentInstallation].badge = 0;
+//                    } else {
+//                        [PFInstallation currentInstallation].badge -= ([objects count] - [storedMessages count]);
+//                    }
+//                    [[PFInstallation currentInstallation] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+//                        if (!error) {
+//                            [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[PFInstallation currentInstallation].badge];
+//                        }
+//                    }];
+//                    
+//                    self.messages = [[NSMutableArray alloc] initWithArray:storedMessages];
+//
+//                    if ([objects count] == [storedMessages count]) {
+//                        self.messages = [[NSMutableArray alloc] initWithArray:storedMessages];
+////                        [self.collectionView reloadData];
+////                        [self scrollToBottomAnimated:NO];
+//                        [self finishReceivingMessage];
+//                        [self.progressHud hide:YES];
+//                        self.collectionView.collectionViewLayout.springinessEnabled = YES;
+//                    } else {
+//
+//                        [self.progressHud hide:YES];
+//                        for (PFObject *msg in [self.messageObjects subarrayWithRange:NSMakeRange([storedMessages count], [self.messageObjects count] - [storedMessages count])]) {
+//                        
+//                            dispatch_async(messageQueue, ^{
+//                                
+//                                CLS_LOG("Creating new message: %@", msg);
+//                                
+//                                [chatvc createMessageAsync:msg];
+//                            
+//
+//                            });
+//                        }
+//                    }
+//                } else {
+//                    NSLog(@"Error: %@", [error localizedDescription]);
+//                }
+//                
+//            }];
+//        }
+//        
+//    }];
     
 //    [self.messageInputView.textView becomeFirstResponder];
+    
+    isLoading = NO;
+    [self loadMessages];
 }
 
 
@@ -868,19 +946,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Table view data source
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    NSLog(@"number of rows: %lu", (unsigned long)[self.messages count]);
-    return [self.messages count];
-}
-
-#pragma mark - JSMessagesViewDataSource implementation
-
-//- (id <JSMessageData>)messageForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    JSMessage *message = self.messages[(NSUInteger) indexPath.row];
-//    return message;
-//}
 
 - (UIImageView *)avatarImageViewForRowAtIndexPath:(NSIndexPath *)indexPath sender:(NSString *)sender {
     return nil;
@@ -900,14 +965,6 @@
     return YES;
 }
 
-/*- (UIButton *)sendButtonForInputView {
- return nil;
- }*/
-
-/*- (NSString *)customCellIdentifierForRowAtIndexPath:(NSIndexPath *)indexPath {
- return nil;
- }*/
-
 - (void)closePressed:(UIBarButtonItem *)sender
 {
     if (self.delegateModal) {
@@ -924,33 +981,34 @@
     if ([pNotification.userInfo[@"type"] isEqualToString:@"message"] &&
         [pNotification.userInfo[@"from"] isEqualToString:self.recipient.objectId])
     {
-        self.showTypingIndicator = YES;
-        NSLog(@"New message: %@", pNotification.userInfo);
-//        Message *message = [[Message alloc] initWithText:pNotification.userInfo[@"text"] sender:self.recipient recipient:[PFUser currentUser] conversation:self.conversation];
-        JSQMessage *message = [[JSQMessage alloc] initWithText:pNotification.userInfo[@"text"] sender:self.recipient.username date:[NSDate date]];
-        
-        [self.messages addObject:message];
-        
-        [PFInstallation currentInstallation].badge -= 1;
-        [[PFInstallation currentInstallation] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if (!error) {
-                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[PFInstallation currentInstallation].badge];
-            }
-        }];
-
-        dispatch_async(dispatch_get_main_queue(), ^{
-            // Update the UI
-
-            [self finishReceivingMessage];
-        });
+//        [PFInstallation currentInstallation].badge -= 1;
+//        [[PFInstallation currentInstallation] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+//            if (!error) {
+//                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[PFInstallation currentInstallation].badge];
+//            }
+//        }];
     }
 }
 
 - (void) broughtToForeground
 {
-//    [self.collectionView reloadData];
-//    [self scrollToBottomAnimated:YES];
     [self finishReceivingMessage];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex != actionSheet.cancelButtonIndex)
+    {
+        if (buttonIndex == 0)	ShouldStartCamera(self, YES);
+        if (buttonIndex == 1)	ShouldStartPhotoLibrary(self, YES);
+    }
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    UIImage *picture = info[UIImagePickerControllerEditedImage];
+    [self sendMessage:@"[Picture message]" Picture:picture];
+    [picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

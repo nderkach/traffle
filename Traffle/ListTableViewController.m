@@ -8,22 +8,16 @@
 
 #import <POP.h>
 #import <Crashlytics/Crashlytics.h>
+#import <Parse/Parse.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 
 #import "ListTableViewController.h"
 #import "ChatViewController.h"
 #import "DestinationViewController.h"
 #import "Constants.h"
+#import "CustomTableViewCell.h"
 
 static int delay = 0.0;
-
-@interface CustomPFTableViewCell : PFTableViewCell
-
-@property (strong, nonatomic) UIImageView *backgroundImageView;
-@property (strong, nonatomic) UILabel *badgeLabel;
-@property (strong, nonatomic) UIImageView *badgeView;
-@property (strong, nonatomic) PFUser *user;
-
-@end
 
 @implementation PFImageView (Utility)
 
@@ -42,86 +36,19 @@ static int delay = 0.0;
 
 @end
 
-@implementation CustomPFTableViewCell
-
-- (void)setBadgeText:(NSString *)text
-{
-    self.badgeLabel.text = text;
-    self.badgeView.hidden = NO;
-}
-
-- (void)resetBadge
-{
-    self.badgeView.hidden = YES;
-}
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-    UIImage *badgeMask = [UIImage imageNamed:@"chat_new_msg"];
-    self.badgeView = [[UIImageView alloc] initWithImage:badgeMask];
-    self.badgeView.hidden = YES;
-    self.badgeLabel = [[UILabel alloc] init];
-    self.selectionStyle = UITableViewCellSelectionStyleNone;
-    return [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-}
-
--(void)layoutSubviews {
-    [super layoutSubviews];
-    
-    UIImage *profileMask = [UIImage imageNamed:@"chat_profile_mask"];
-    self.backgroundView = [[UIImageView alloc] initWithImage:profileMask];
-    self.backgroundView.frame = CGRectMake(16, 25, profileMask.size.width, profileMask.size.height);
-    [self insertSubview:self.backgroundView belowSubview:self.imageView];
-    
-    self.imageView.frame = CGRectMake(19, 27, 53, 53);
-    self.imageView.layer.cornerRadius = 27;
-    self.imageView.layer.masksToBounds = YES;
-    [self addSubview:self.imageView];
-
-    UIImage *badgeMask = [UIImage imageNamed:@"chat_new_msg"];
-    self.badgeView.frame = CGRectMake(61, 29, badgeMask.size.width, badgeMask.size.height);
-    [self addSubview:self.badgeView];
-    
-    self.badgeLabel.frame = CGRectMake(0.0f, 0.0f, badgeMask.size.width, badgeMask.size.height);
-    self.badgeLabel.font = [UIFont fontWithName:@"AvenirNextCondensed-Bold" size:10.0f];
-    self.badgeLabel.textColor = [UIColor whiteColor];
-    self.badgeLabel.textAlignment = NSTextAlignmentCenter;
-    [self.badgeView addSubview:self.badgeLabel];
-    
-    self.textLabel.frame = CGRectMake(95, self.textLabel.frame.origin.y, self.textLabel.frame.size.width, self.textLabel.frame.size.height);
-}
-
-@end
-
 @interface ListTableViewController ()
+{
+    NSMutableArray *conversations;
+    UIRefreshControl *refreshControl;
+}
 
 @property (strong, nonatomic) NSMutableArray *users;
+@property (strong, nonatomic) MBProgressHUD *progressHud;
+@property (strong, nonatomic) NSMutableDictionary *unreadCounts;
 
 @end
 
 @implementation ListTableViewController
-
-- (id)initWithCoder:(NSCoder *)aCoder
-{
-    self = [super initWithCoder:aCoder];
-    if (self) {
-        // The key of the PFObject to display in the label of the default cell style
-        self.textKey = @"objectId";
-        
-        // The title for this table in the Navigation Controller.
-//        self.title = @"Chats";
-        
-        // Whether the built-in pull-to-refresh is enabled
-//        self.pullToRefreshEnabled = YES;
-        
-        // Whether the built-in pagination is enabled
-//        self.paginationEnabled = YES;
-        
-        // The number of objects to show per page
-//        self.objectsPerPage = 5;
-    }
-    return self;
-}
 
 - (void)didDismissChatViewController:(ChatViewController *)vc
 {
@@ -132,71 +59,36 @@ static int delay = 0.0;
 {
     [super viewDidLoad];
     
-//    UIImage *image = [UIImage imageNamed:@"eye_icon"];
-//    
-//    self.showUnreadRequestsButton.imageEdgeInsets = UIEdgeInsetsMake(0., self.showUnreadRequestsButton.frame.size.width - (image.size.width + 15.), 0., 0.);
-//    self.showUnreadRequestsButton.titleEdgeInsets = UIEdgeInsetsMake(0., 0., 0., image.size.width);
-//    [self.showUnreadRequestsButton setImage:image forState:UIControlStateNormal];
+    self.unreadCounts = [[NSMutableDictionary alloc] init];
     
     if (isiPhone5) {
-        self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"big_screen_bg_BLUR"]];
+        self.tableConversations.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"big_screen_bg_BLUR"]];
     } else {
-        self.tableView.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"small_screen_bg_BLUR"]];
+        self.tableConversations.backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"small_screen_bg_BLUR"]];
     }
 
-    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.tableConversations.tableFooterView = [[UIView alloc] init];
     
-    self.tableView.separatorColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"separator"]];
+    self.tableConversations.separatorColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"separator"]];
     
     [self.navigationController setNavigationBarHidden:NO animated:YES];
+
+    refreshControl = [[UIRefreshControl alloc] init];
+    refreshControl.tintColor = [UIColor whiteColor];
+    [refreshControl addTarget:self action:@selector(loadMessages) forControlEvents:UIControlEventValueChanged];
+    [self.tableConversations addSubview:refreshControl];
+
+    conversations = [[NSMutableArray alloc] init];
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    if ([PFUser currentUser] != nil)
+    {
+        [self loadMessagesWithHud];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-
-    /* generate a fake requests to myself */
-    
-//    if (![[PFUser currentUser].objectId isEqualToString:@"teApK6wywU"]) {
-//        
-//        PFQuery *query = [PFUser query];
-//        PFUser *suser = (PFUser*)[query getObjectWithId:@"teApK6wywU"];
-//        NSLog(@"%@", [PFUser currentUser]);
-//        
-//        PFObject *request = [PFObject objectWithClassName:@"Request"];
-//        request[@"fromUser"] = [PFUser currentUser];
-//        request[@"toUser"] = suser;
-//        
-//        [request saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-//            // Everything was successful! Reset UI… do other stuff
-//            // Here’s where we will send the push
-//            //set our options
-//            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
-//                                  [NSString stringWithFormat:@"%@ wants to hang out!", [PFUser currentUser][@"Name"]], @"alert",
-//                                  @"Increment", @"badge",
-//                                  @"request", @"type",
-//                                  nil];
-//            
-//            // Now we’ll need to query all saved installations to find those of our recipients
-//            // Create our Installation query using the self.recipients array we already have
-//            PFQuery *pushQuery = [PFInstallation query];
-//            [pushQuery whereKey:@"installationUser" equalTo:suser.objectId];
-//            
-//            // Send push notification to our query
-//            PFPush *push = [[PFPush alloc] init];
-//            [push setQuery:pushQuery];
-//            [push setData:data];
-//            [push sendPushInBackground];
-//            
-//        }];
-//    }
-
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -211,6 +103,49 @@ static int delay = 0.0;
     [self.navigationController setNavigationBarHidden:YES animated:YES];
     
     [super viewWillDisappear:animated];
+}
+
+- (void)loadMessagesWithHud
+{
+    self.progressHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [self.progressHud setLabelText:@"Loading..."];
+    [self.progressHud setDimBackground:YES];
+    [self loadMessages];
+}
+
+- (void)loadMessages
+{
+    if ([PFUser currentUser] != nil)
+    {
+        PFQuery *query = [PFQuery queryWithClassName:@"Conversation"];
+        [query whereKey:@"participants" equalTo:[PFUser currentUser]];
+        [query includeKey:@"participants"];
+        [query orderByDescending:@"updatedAt"];
+        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
+         {
+             if (error == nil)
+             {
+                 // get unread messages counts
+                 __block NSArray* fetchedConversations = objects;
+                 PFQuery *query = [PFQuery queryWithClassName:@"Unread"];
+                 [query whereKey:@"user" equalTo:[PFUser currentUser]];
+                 [query whereKey:@"conversation" containedIn:objects];
+                 [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+                     for (PFObject *object in objects) {
+                         self.unreadCounts[((PFObject*)object[@"conversation"]).objectId] = object[@"count"];
+                     }
+                     
+                     [conversations removeAllObjects];
+                     [conversations addObjectsFromArray:fetchedConversations];
+                     [self.tableConversations reloadData];
+                 }];
+
+             }
+//             else [ProgressHUD showError:@"Network error."];
+             [refreshControl endRefreshing];
+             [self.progressHud hide:YES];
+         }];
+    }
 }
 
 - (void)viewDidLayoutSubviews
@@ -268,30 +203,9 @@ static int delay = 0.0;
     return 100.0f;
 }
 
-//- (void)objectsDidLoad:(NSError *)error
-//{
-//    [super objectsDidLoad:error];
-//    
-//    CGFloat toValue = CGRectGetMidX(self.view.bounds);
-//    
-//    NSUInteger index = 0;
-//    for (UITableViewCell *cell in self.tableView.visibleCells) {
-//    
-//    POPSpringAnimation *onscreenAnimation = [POPSpringAnimation animationWithPropertyNamed:kPOPLayerPositionX];
-//        onscreenAnimation.fromValue = @(-toValue);
-//        onscreenAnimation.toValue = @(toValue);
-//        onscreenAnimation.springBounciness = 5.f;
-//        onscreenAnimation.beginTime = (CACurrentMediaTime() + 0.1 * index);
-//        onscreenAnimation.delegate = self;
-//        [cell.layer pop_addAnimation:onscreenAnimation forKey:onscreenAnimation.name];
-//        index++;
-//    }
-//    
-//}
-
 -(void)pop_animationDidStart:(POPAnimation *)anim
 {
-    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath: [NSIndexPath indexPathForRow:[anim.name intValue] inSection:0]];
+    UITableViewCell *cell = [self.tableConversations cellForRowAtIndexPath: [NSIndexPath indexPathForRow:[anim.name intValue] inSection:0]];
     cell.hidden = NO;
 }
 
@@ -301,15 +215,6 @@ static int delay = 0.0;
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-// Override to customize what kind of query to perform on the class. The default is to query for
-// all objects ordered by createdAt descending.
-- (PFQuery *)queryForTable {
-    PFQuery *query = [PFQuery queryWithClassName:@"Conversation"];
-    [query whereKey:@"participants" equalTo:[PFUser currentUser]];
-    [query orderByDescending:@"updatedAt"];
-    return query;
 }
 
 //- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
@@ -325,105 +230,109 @@ static int delay = 0.0;
 //}
 
 
-- (void)configureCellAsync:(CustomPFTableViewCell *)cell user:(PFUser *)user index:(NSUInteger)index
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    CLS_LOG(@"configureCellAsync %@ at index %lu...", user, (unsigned long)index);
-    
-    cell.user = user;
-    
-    PFFile *thumbnail = user[@"Photo"];
-    
-    UIFont *avenirFont = [UIFont fontWithName:@"AvenirNextCondensed-Regular" size:21.0f];
-    UIFont *avenirFontDemiBold = [UIFont fontWithName:@"AvenirNextCondensed-DemiBold" size:21.0f];
-    NSDictionary *avenirFontDict = [NSDictionary dictionaryWithObject:avenirFont forKey:NSFontAttributeName];
-    NSDictionary *avenirFontDemiBoldDict = [NSDictionary dictionaryWithObject:avenirFontDemiBold forKey:NSFontAttributeName];
-    NSMutableAttributedString *finalString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@, ", user[@"Name"]] attributes: avenirFontDict];
-   
-    NSMutableAttributedString *cityString;
-    if (user[@"city"]) {
-        cityString = [[NSMutableAttributedString alloc] initWithString:user[@"city"] attributes: avenirFontDemiBoldDict];
-    } else {
-        cityString = [[NSMutableAttributedString alloc] initWithString:@"Mars" attributes: avenirFontDemiBoldDict];
-    }
-    
-    [finalString appendAttributedString:cityString];
-    
-    cell.textLabel.attributedText = finalString;
-    cell.textLabel.textColor = [UIColor whiteColor];
-    
-    [thumbnail getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
-        [cell.imageView setImage:[UIImage imageWithData:data]];
-        [cell.imageView setNeedsDisplay];
-        [cell setNeedsLayout];
-    }];
+    return 1;
 }
 
-// Override to customize the look of a cell representing an object. The default is to display
-// a UITableViewCellStyleDefault style cell with the label being the first key in the object.
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
-    
-    NSLog(@"Cell for row: %ld object: %@", (long)[indexPath row], object.objectId);
-    
-    NSString *CellIdentifier = object.objectId;
-    CustomPFTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [conversations count];
+}
+
+//- (void)configureCellAsync:(CustomPFTableViewCell *)cell user:(PFUser *)user index:(NSUInteger)index
+//{
+//    CLS_LOG(@"configureCellAsync %@ at index %lu...", user, (unsigned long)index);
+//    
+//    cell.user = user;
+//    
+//    PFFile *thumbnail = user[@"Photo"];
+//    
+//    UIFont *avenirFont = [UIFont fontWithName:@"AvenirNextCondensed-Regular" size:21.0f];
+//    UIFont *avenirFontDemiBold = [UIFont fontWithName:@"AvenirNextCondensed-DemiBold" size:21.0f];
+//    NSDictionary *avenirFontDict = [NSDictionary dictionaryWithObject:avenirFont forKey:NSFontAttributeName];
+//    NSDictionary *avenirFontDemiBoldDict = [NSDictionary dictionaryWithObject:avenirFontDemiBold forKey:NSFontAttributeName];
+//    NSMutableAttributedString *finalString = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@, ", user[@"Name"]] attributes: avenirFontDict];
+//   
+//    NSMutableAttributedString *cityString;
+//    if (user[@"city"]) {
+//        cityString = [[NSMutableAttributedString alloc] initWithString:user[@"city"] attributes: avenirFontDemiBoldDict];
+//    } else {
+//        cityString = [[NSMutableAttributedString alloc] initWithString:@"Mars" attributes: avenirFontDemiBoldDict];
+//    }
+//    
+//    [finalString appendAttributedString:cityString];
+//    
+//    cell.textLabel.attributedText = finalString;
+//    cell.textLabel.textColor = [UIColor whiteColor];
+//    
+//    [thumbnail getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
+//        [cell.imageView setImage:[UIImage imageWithData:data]];
+//        [cell.imageView setNeedsDisplay];
+//        [cell setNeedsLayout];
+//    }];
+//}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    PFObject *conversation = (PFObject*)(conversations[indexPath.row]);
+    NSString *cellIdentifier = conversation.objectId;
+    CustomTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     if (cell == nil) {
-        cell = [[CustomPFTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
-    
-        // Configure the cell
-        
-        NSUInteger numberOfMessagesCached = [[NSUserDefaults standardUserDefaults] objectForKey:object.objectId]? [[NSKeyedUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:object.objectId]] count]: 0;
-        NSLog(@"numberOfMessagesCached: %lu", (unsigned long)numberOfMessagesCached);
-        NSUInteger totalNumberofMessages = [object[@"messageCount"] unsignedIntegerValue];
-        NSLog(@"totalNumberofMessages: %lu", (unsigned long)totalNumberofMessages);
-        if (totalNumberofMessages > numberOfMessagesCached) {
-            [cell setBadgeText:[NSString stringWithFormat:@"%lu", totalNumberofMessages - numberOfMessagesCached]];
+        NSLog(@"New cell");
+        cell = [[CustomTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+        [cell bindData:conversations[indexPath.row]];
+        if ([self.unreadCounts[conversation.objectId] integerValue] > 0) {
+            [cell setBadgeText:[NSString stringWithFormat:@"%@", self.unreadCounts[conversation.objectId]]];
         }
-
-        cell.backgroundColor = [UIColor clearColor];
-        
-         PFObject *otherUser = [object[@"participants"] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.objectId != %@", [PFUser currentUser].objectId]].firstObject;
-        
-        // TODO: doesnt work with caching
-        
-//        NSLog(@"%@", [PFUser currentUser]);
-//        NSLog(@"%@", otherUser);
-        NSLog(@"Fetching %@...", otherUser.objectId);
-
-        cell.imageView.image = [UIImage imageNamed:@"big_screen_bg_BLUR"];
-        
-        if ([self.cachedUsers objectForKey:otherUser.objectId]) {
-            NSLog(@"%@ cached", otherUser.objectId);
-            [self configureCellAsync:cell user:(PFUser *)self.cachedUsers[otherUser.objectId] index:[indexPath row]];
-        } else {
-            [otherUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                [self configureCellAsync:cell user:(PFUser *)otherUser index:[indexPath row]];
-            }];
-        }
-        
-        CGFloat toValue = CGRectGetMidX(self.view.bounds);
-
-        POPSpringAnimation *onscreenAnimation = [POPSpringAnimation animationWithPropertyNamed:kPOPLayerPositionX];
-        onscreenAnimation.fromValue = @(-toValue);
-        onscreenAnimation.toValue = @(toValue);
-        onscreenAnimation.springBounciness = 5.0f;
-        onscreenAnimation.beginTime = (CACurrentMediaTime() + delay);
-        onscreenAnimation.delegate = self;
-        onscreenAnimation.name = [NSString stringWithFormat:@"%ld", (long)[indexPath row]];
-        delay+=0.7;
-
-        cell.hidden = YES;
-
-        [cell.layer pop_addAnimation:onscreenAnimation forKey:onscreenAnimation.name];
     }
+    
+//    CustomTableViewCell *cell = [[CustomTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+//    [cell bindData:conversations[indexPath.row]];
 
+    
+    // set badge
+    
+    CGFloat toValue = CGRectGetMidX(self.view.bounds);
+
+    POPSpringAnimation *onscreenAnimation = [POPSpringAnimation animationWithPropertyNamed:kPOPLayerPositionX];
+    onscreenAnimation.fromValue = @(-toValue);
+    onscreenAnimation.toValue = @(toValue);
+    onscreenAnimation.springBounciness = 5.0f;
+    onscreenAnimation.beginTime = (CACurrentMediaTime() + delay);
+    onscreenAnimation.delegate = self;
+    onscreenAnimation.name = [NSString stringWithFormat:@"%ld", (long)[indexPath row]];
+    delay+=0.7;
+
+    cell.hidden = YES;
+
+    [cell.layer pop_addAnimation:onscreenAnimation forKey:onscreenAnimation.name];
+    
     return cell;
 }
 
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath object:(PFObject *)object {
+//    
+//
+//        if ([self.cachedUsers objectForKey:otherUser.objectId]) {
+//            NSLog(@"%@ cached", otherUser.objectId);
+//            [self configureCellAsync:cell user:(PFUser *)self.cachedUsers[otherUser.objectId] index:[indexPath row]];
+//        } else {
+//            [otherUser fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+//                [self configureCellAsync:cell user:(PFUser *)otherUser index:[indexPath row]];
+//            }];
+//        }
+//
+//    }
+//
+//    return cell;
+//}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    CustomPFTableViewCell *cell = (CustomPFTableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
-    [cell resetBadge];
-    self.recipient = cell.user;
+    CustomTableViewCell *cell = (CustomTableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
+//    [cell resetBadge];
+    self.selectedConversation = cell.conversation;
     [self performSegueWithIdentifier:@"seguePushChat" sender:self];
 }
 
@@ -487,9 +396,8 @@ static int delay = 0.0;
     if ([segue.identifier isEqualToString:@"seguePushChat"]) {
         UINavigationController *nc = segue.destinationViewController;
         ChatViewController *vc = (ChatViewController *)nc.topViewController;
-        vc.recipient = self.recipient;
+        vc.conversation = self.selectedConversation;
         vc.delegateModal = self;
-        
     }
 
     if ([segue.identifier isEqualToString:@"showDestinationsFromList"]) {
@@ -535,5 +443,22 @@ static int delay = 0.0;
 //
 //    }
 }
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [conversations[indexPath.row] deleteInBackgroundWithBlock:^(BOOL succeeded, NSError *error)
+     {
+         if (error != nil) NSLog(@"DeleteMessageItem delete error.");
+     }];
+    [conversations removeObjectAtIndex:indexPath.row];
+    [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+}
+
+
 
 @end

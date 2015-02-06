@@ -11,11 +11,12 @@
 
 #import "ChatViewController.h"
 
-@interface ListTableViewController : PFQueryTableViewController <ChatViewControllerDelegate>
+@interface ListTableViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, ChatViewControllerDelegate>
 
-@property (nonatomic, strong) PFUser *recipient;
+@property (nonatomic, strong) PFObject *selectedConversation;
 @property (strong, nonatomic) IBOutlet UIButton *showUnreadRequestsButton;
-@property (nonatomic, strong) NSDictionary *cachedUsers;
+//@property (nonatomic, strong) NSDictionary *cachedUsers;
+@property (strong, nonatomic) IBOutlet UITableView *tableConversations;
 
 - (IBAction)showUnreadRequests:(id)sender;
 

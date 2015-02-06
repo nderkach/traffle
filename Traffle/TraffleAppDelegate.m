@@ -131,6 +131,7 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken {
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:newDeviceToken];
     [currentInstallation saveInBackground];
+
 //    [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
 //        if (!error) {
 //            // Temp: reset currentinstallation
@@ -159,9 +160,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(vo
 {
     CLS_LOG(@"Userinfo: %@", userInfo);
     
-    // disable in-app alert
-    // [PFPush handlePush:userInfo];
-    
     if ([userInfo[@"aps"] objectForKey:@"badge"]) {
         NSInteger badgeNumber = [[userInfo[@"aps"] objectForKey:@"badge"] integerValue];
         CLS_LOG(@"Push notification received, set badge count to: %ld", (long)badgeNumber);
@@ -177,10 +175,10 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(vo
         UIStoryboard *mainstoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         if ([userInfo[@"type"] isEqualToString:@"message"]) {
             UINavigationController *cnvc = [mainstoryboard instantiateViewControllerWithIdentifier:@"ChatNavigationViewController"];
-            PFQuery *query = [PFUser query];
-            [query getObjectInBackgroundWithId:userInfo[@"from"] block:^(PFObject *object, NSError *error) {
+            PFQuery *query = [PFQuery queryWithClassName:@"Conversation"];
+            [query getObjectInBackgroundWithId:userInfo[@"conversation"] block:^(PFObject *object, NSError *error) {
                 ChatViewController *cvc = (ChatViewController*)cnvc.topViewController;
-                cvc.recipient = (PFUser *)object;
+                cvc.conversation = object;
                 [self.window.rootViewController presentViewController:cnvc animated:YES completion:NULL];
             }];
         } else if ([userInfo[@"type"] isEqualToString:@"request"]) {

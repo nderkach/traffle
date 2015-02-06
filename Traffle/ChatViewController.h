@@ -37,18 +37,16 @@
 
 @end
 
-@interface ChatViewController : JSQMessagesViewController <JSQMessagesCollectionViewDataSource, JSQMessagesCollectionViewDelegateFlowLayout>
+@interface ChatViewController : JSQMessagesViewController <JSQMessagesCollectionViewDataSource, JSQMessagesCollectionViewDelegateFlowLayout, JSQMessagesCollectionViewCellDelegate, JSQMessageAvatarImageDataSource, UIImagePickerControllerDelegate, UIActionSheetDelegate>
 
 @property (strong, nonatomic) id<ChatViewControllerDelegate> delegateModal;
 
-@property (strong, nonatomic) NSMutableArray *messages;
 @property (copy, nonatomic) NSDictionary *avatars;
 
 @property (strong, nonatomic) UIImageView *outgoingBubbleImageView;
 @property (strong, nonatomic) UIImageView *incomingBubbleImageView;
 
 @property (nonatomic, strong) PFObject *conversation;
-@property (nonatomic, strong) PFUser *recipient;
 
 - (void)receiveMessagePressed:(UIBarButtonItem *)sender;
 

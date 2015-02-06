@@ -35,8 +35,8 @@
 @property (strong, nonatomic) UILabel *hangoutLabel;
 @property (strong, nonatomic) UIImageView *acceptedView;
 @property (strong, nonatomic) UILabel *coolLabel;
-@property(nonatomic, strong) NSURL *userPhotoWebPageURL;
-
+@property (nonatomic, strong) NSURL *userPhotoWebPageURL;
+@property (nonatomic, strong) PFObject *conversation;
 
 @end
 
@@ -80,8 +80,7 @@
     self.barButton.shouldHideBadgeAtZero = YES;
     
     // Set a value for the badge
-    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    self.barButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)currentInstallation.badge];
+    self.barButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)[PFInstallation currentInstallation].badge];
     
     [self.view addSubview:self.chatButton];
     
@@ -209,7 +208,7 @@
     if ([segue.identifier isEqualToString:@"seguePushChatWhenAccepted"]) {
         UINavigationController *nc = segue.destinationViewController;
         ChatViewController *vc = (ChatViewController *)nc.topViewController;
-        vc.recipient = self.matchedUser;
+        vc.conversation = self.conversation;
         vc.delegateModal = self;
     }
 }
@@ -561,9 +560,14 @@
 - (void)swipedRight
 {
     if (self.incoming) {
-        if ([PFInstallation currentInstallation].badge > 0)
-            [PFInstallation currentInstallation].badge -= 1;
-        self.barButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)[PFInstallation currentInstallation].badge];
+        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+        NSInteger numberOfBadges = currentInstallation.badge;
+        if (numberOfBadges > 0) {
+            numberOfBadges -= 1;
+            [currentInstallation saveEventually];
+        }
+        
+        self.barButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)numberOfBadges];
         
         [[self.requests lastObject] setObject:@YES forKey:@"accepted"];
         [[self.requests lastObject] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -588,18 +592,18 @@
             [push setData:data];
             [push sendPushInBackground];
             
-            PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-            NSLog(@"%d", currentInstallation.badge);
-            //FIXME: teporarilly
-            if (currentInstallation.badge > 0)
-                currentInstallation.badge -= 1;
-            NSLog(@"%d", currentInstallation.badge);
-            [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                if (!error) {
-                    NSLog(@"%d", currentInstallation.badge);
-                    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:currentInstallation.badge];
-                }
-            }];
+//            PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+//            NSLog(@"%d", currentInstallation.badge);
+//            //FIXME: teporarilly
+//            if (currentInstallation.badge > 0)
+//                currentInstallation.badge -= 1;
+//            NSLog(@"%d", currentInstallation.badge);
+//            [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+//                if (!error) {
+//                    NSLog(@"%d", currentInstallation.badge);
+//                    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:currentInstallation.badge];
+//                }
+//            }];
             
             NSLog(@"Creating a new conversation...");
             
@@ -607,8 +611,8 @@
             
             PFObject *conversation = [PFObject objectWithClassName:@"Conversation"];
             conversation[@"participants"] = [NSArray arrayWithObjects:[PFUser currentUser], self.matchedUser, nil];
-            conversation[@"messageCount"] = @0;
             [conversation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                self.conversation = conversation;
                 [self performSegueWithIdentifier:@"seguePushChatWhenAccepted" sender:self];
             }];
         }];
@@ -709,9 +713,13 @@
 - (void)swipedLeft
 {
     if (self.incoming) {
-        if ([PFInstallation currentInstallation].badge > 0)
-            [PFInstallation currentInstallation].badge -= 1;
-        self.barButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)[PFInstallation currentInstallation].badge];
+        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+        NSInteger numberOfBadges = currentInstallation.badge;
+        if (numberOfBadges > 0) {
+            numberOfBadges -= 1;
+            [currentInstallation saveEventually];
+        }
+        self.barButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)numberOfBadges];
         [[self.requests lastObject] setObject:@NO forKey:@"accepted"];
         [[self.requests lastObject] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             [self.requests removeLastObject];

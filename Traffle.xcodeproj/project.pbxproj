@@ -14,6 +14,7 @@
 		ED322773192DBBFE009E6B99 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED322772192DBBFE009E6B99 /* CoreMedia.framework */; };
 		ED322775192DBC08009E6B99 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED322774192DBC08009E6B99 /* CoreVideo.framework */; };
 		ED322778192FDE87009E6B99 /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED322777192FDE87009E6B99 /* Crashlytics.framework */; };
+		ED35B0641A820C69007DDBEF /* CustomTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ED35B0631A820C69007DDBEF /* CustomTableViewCell.m */; };
 		ED3F6A2519296ED9002C349C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A2419296ED9002C349C /* Foundation.framework */; };
 		ED3F6A2719296ED9002C349C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A2619296ED9002C349C /* CoreGraphics.framework */; };
 		ED3F6A2919296ED9002C349C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A2819296ED9002C349C /* UIKit.framework */; };
@@ -24,7 +25,6 @@
 		ED3F6A5619297203002C349C /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A5519297203002C349C /* FacebookSDK.framework */; };
 		ED3F6A5819297317002C349C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A5719297317002C349C /* SystemConfiguration.framework */; };
 		ED3F6A5A1929731E002C349C /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A591929731E002C349C /* Security.framework */; };
-		ED3F6A5C1929732D002C349C /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A5B1929732D002C349C /* StoreKit.framework */; };
 		ED3F6A5E19297333002C349C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A5D19297333002C349C /* QuartzCore.framework */; };
 		ED3F6A601929733C002C349C /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A5F1929733C002C349C /* MobileCoreServices.framework */; };
 		ED3F6A6219297342002C349C /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A6119297342002C349C /* libz.dylib */; };
@@ -44,15 +44,15 @@
 		ED98447119402F0E00096791 /* CBGUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = ED98445719402F0E00096791 /* CBGUtil.m */; };
 		ED9C3A3A19368B9300AF0B62 /* ListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9C3A3919368B9300AF0B62 /* ListTableViewController.m */; };
 		ED9C3A7F193827F000AF0B62 /* CLLocation+measuring.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9C3A7E193827F000AF0B62 /* CLLocation+measuring.m */; };
+		EDA90ECF1A834ABA008F990A /* camera.m in Sources */ = {isa = PBXBuildFile; fileRef = EDA90ECE1A834ABA008F990A /* camera.m */; };
 		EDB23B0E198603350085746E /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED42EED6192ABD7F00613416 /* ChatViewController.m */; };
 		EDBAF7871929D0A70027C4D4 /* DestinationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDBAF7861929D0A70027C4D4 /* DestinationViewController.m */; };
 		EDCABE8D194F553B00E5FDC6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ED3F6A69192974EE002C349C /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		247430B5582A6258764C6C5E /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		732B2E42641B45C6876FD7AF /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		8F38290CBA78478DB36F258A /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
-		B903D9A9D11F468291B69F96 /* Pods-TraffleTests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TraffleTests.xcconfig"; path = "Pods/Pods-TraffleTests.xcconfig"; sourceTree = "<group>"; };
 		ED2FC4A1194E5B2A00181DB7 /* Algorithm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Algorithm.h; sourceTree = "<group>"; };
 		ED2FC4A2194E5B2A00181DB7 /* Algorithm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Algorithm.m; sourceTree = "<group>"; };
 		ED32276C192DBA6B009E6B99 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
@@ -61,6 +61,8 @@
 		ED322772192DBBFE009E6B99 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		ED322774192DBC08009E6B99 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		ED322777192FDE87009E6B99 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
+		ED35B0621A820C69007DDBEF /* CustomTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTableViewCell.h; sourceTree = "<group>"; };
+		ED35B0631A820C69007DDBEF /* CustomTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTableViewCell.m; sourceTree = "<group>"; };
 		ED3F6A2119296ED9002C349C /* Traffle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Traffle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED3F6A2419296ED9002C349C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		ED3F6A2619296ED9002C349C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -77,7 +79,6 @@
 		ED3F6A5519297203002C349C /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
 		ED3F6A5719297317002C349C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		ED3F6A591929731E002C349C /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
-		ED3F6A5B1929732D002C349C /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		ED3F6A5D19297333002C349C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		ED3F6A5F1929733C002C349C /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		ED3F6A6119297342002C349C /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
@@ -115,8 +116,11 @@
 		ED9C3A7D193827F000AF0B62 /* CLLocation+measuring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CLLocation+measuring.h"; sourceTree = "<group>"; };
 		ED9C3A7E193827F000AF0B62 /* CLLocation+measuring.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CLLocation+measuring.m"; sourceTree = "<group>"; };
 		ED9C3A8019382A1B00AF0B62 /* CLUtilsDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CLUtilsDefines.h; sourceTree = "<group>"; };
+		EDA90ECD1A834ABA008F990A /* camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
+		EDA90ECE1A834ABA008F990A /* camera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = camera.m; sourceTree = "<group>"; };
 		EDBAF7851929D0A70027C4D4 /* DestinationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DestinationViewController.h; sourceTree = "<group>"; };
 		EDBAF7861929D0A70027C4D4 /* DestinationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DestinationViewController.m; sourceTree = "<group>"; };
+		FE29867EFAE14D437275E077 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,7 +139,6 @@
 				ED3F6A601929733C002C349C /* MobileCoreServices.framework in Frameworks */,
 				ED3F6A5E19297333002C349C /* QuartzCore.framework in Frameworks */,
 				ED322778192FDE87009E6B99 /* Crashlytics.framework in Frameworks */,
-				ED3F6A5C1929732D002C349C /* StoreKit.framework in Frameworks */,
 				ED3F6A5A1929731E002C349C /* Security.framework in Frameworks */,
 				ED3F6A5819297317002C349C /* SystemConfiguration.framework in Frameworks */,
 				ED3F6A2719296ED9002C349C /* CoreGraphics.framework in Frameworks */,
@@ -151,6 +154,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		76E7CDEB3CAAD3EE3ED466E2 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				247430B5582A6258764C6C5E /* Pods.debug.xcconfig */,
+				FE29867EFAE14D437275E077 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		ED3F6A1819296ED9002C349C = {
 			isa = PBXGroup;
 			children = (
@@ -158,8 +170,7 @@
 				ED3F6A2A19296ED9002C349C /* Traffle */,
 				ED3F6A2319296ED9002C349C /* Frameworks */,
 				ED3F6A2219296ED9002C349C /* Products */,
-				8F38290CBA78478DB36F258A /* Pods.xcconfig */,
-				B903D9A9D11F468291B69F96 /* Pods-TraffleTests.xcconfig */,
+				76E7CDEB3CAAD3EE3ED466E2 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -188,7 +199,6 @@
 				ED3F6A6119297342002C349C /* libz.dylib */,
 				ED3F6A5F1929733C002C349C /* MobileCoreServices.framework */,
 				ED3F6A5D19297333002C349C /* QuartzCore.framework */,
-				ED3F6A5B1929732D002C349C /* StoreKit.framework */,
 				ED3F6A591929731E002C349C /* Security.framework */,
 				ED3F6A5719297317002C349C /* SystemConfiguration.framework */,
 				ED3F6A5519297203002C349C /* FacebookSDK.framework */,
@@ -205,6 +215,8 @@
 		ED3F6A2A19296ED9002C349C /* Traffle */ = {
 			isa = PBXGroup;
 			children = (
+				ED35B0621A820C69007DDBEF /* CustomTableViewCell.h */,
+				ED35B0631A820C69007DDBEF /* CustomTableViewCell.m */,
 				ED2FC4A1194E5B2A00181DB7 /* Algorithm.h */,
 				ED2FC4A2194E5B2A00181DB7 /* Algorithm.m */,
 				ED42EED5192ABD7F00613416 /* ChatViewController.h */,
@@ -272,6 +284,8 @@
 		ED9C3A7C193827BB00AF0B62 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				EDA90ECD1A834ABA008F990A /* camera.h */,
+				EDA90ECE1A834ABA008F990A /* camera.m */,
 				ED98444219402F0E00096791 /* CBG */,
 				ED9C3A8019382A1B00AF0B62 /* CLUtilsDefines.h */,
 				ED9C3A7D193827F000AF0B62 /* CLLocation+measuring.h */,
@@ -320,6 +334,9 @@
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
+							com.apple.InAppPurchase = {
+								enabled = 0;
+							};
 						};
 					};
 				};
@@ -367,7 +384,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		76FEC1551A2142D0A6DC4AB7 /* Check Pods Manifest.lock */ = {
@@ -418,11 +435,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ED35B0641A820C69007DDBEF /* CustomTableViewCell.m in Sources */,
 				EDB23B0E198603350085746E /* ChatViewController.m in Sources */,
 				ED2FC4A3194E5B2A00181DB7 /* Algorithm.m in Sources */,
 				ED3F6A3119296ED9002C349C /* main.m in Sources */,
 				ED98446E19402F0E00096791 /* CBGLocationManager.m in Sources */,
 				ED3F6A6D1929752A002C349C /* MainViewController.m in Sources */,
+				EDA90ECF1A834ABA008F990A /* camera.m in Sources */,
 				ED98446D19402F0E00096791 /* CBGFlickrManager.m in Sources */,
 				ED9C3A7F193827F000AF0B62 /* CLLocation+measuring.m in Sources */,
 				ED98446A19402F0E00096791 /* UIImage+ImageEffects.m in Sources */,
@@ -527,7 +546,7 @@
 		};
 		ED3F6A4E19296EDA002C349C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F38290CBA78478DB36F258A /* Pods.xcconfig */;
+			baseConfigurationReference = 247430B5582A6258764C6C5E /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -549,7 +568,7 @@
 		};
 		ED3F6A4F19296EDA002C349C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8F38290CBA78478DB36F258A /* Pods.xcconfig */;
+			baseConfigurationReference = FE29867EFAE14D437275E077 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;

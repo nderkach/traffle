@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Nikolay Derkach. All rights reserved.
 //
 
+#define REVERSE_GEO_CODING_URL @"https://maps.googleapis.com/maps/api/geocode/json?"
+
 #import <MBProgressHUD.h>
 #import <Mapbox.h>
 #import <POP.h>
@@ -138,7 +140,7 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
 @property (strong, nonatomic) BBBadgeBarButtonItem *barButton;
 @property (strong, nonatomic) RMAnnotation *dropPin;
 @property (nonatomic) CenterGestureRecognizer *pinch;
-@property (strong, nonatomic) NSMutableDictionary *cachedUsers;
+//@property (strong, nonatomic) NSMutableDictionary *cachedUsers;
 
 @end
 
@@ -157,11 +159,8 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
 {
     [super viewWillAppear:animated];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotificationReceived:) name:@"pushNotification" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotificationReceived:) name:@"pushNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(nomatches:) name:@"nomatches" object:nil];
-    
-    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    self.barButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)currentInstallation.badge];
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"firstLaunchPinch"]) {
         self.shakeitView.hidden = NO;
@@ -227,29 +226,29 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
     //
     //
     
-    if ([PFUser currentUser]) {
-        
-        // cache users with whom you have conversations
-        
-        PFQuery *query = [PFQuery queryWithClassName:@"Conversation"];
-        [query whereKey:@"participants" equalTo:[PFUser currentUser]];
-        [query orderByDescending:@"updatedAt"];
-        
-        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-            self.cachedUsers = [[NSMutableDictionary alloc] initWithCapacity:[objects count]];
-            for (id object in objects) {
-                CLS_LOG(@"Existing conversation: %@", (PFObject*)object);
-                PFObject *otherUser = [object[@"participants"] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.objectId != %@", [PFUser currentUser].objectId]].firstObject;
-                CLS_LOG(@"Existing conversation with %@", otherUser);
-                [otherUser fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
-                    if (!error) {
-                        [self.cachedUsers setObject:object forKey:object.objectId];
-                        CLS_LOG(@"Fetched %@", object.objectId);
-                    }
-                }];
-            }
-        }];
-    }
+//    if ([PFUser currentUser]) {
+//        
+//        // cache users with whom you have conversations
+//        
+//        PFQuery *query = [PFQuery queryWithClassName:@"Conversation"];
+//        [query whereKey:@"participants" equalTo:[PFUser currentUser]];
+//        [query orderByDescending:@"updatedAt"];
+//        
+//        [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+//            self.cachedUsers = [[NSMutableDictionary alloc] initWithCapacity:[objects count]];
+//            for (id object in objects) {
+//                CLS_LOG(@"Existing conversation: %@", (PFObject*)object);
+//                PFObject *otherUser = [object[@"participants"] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.objectId != %@", [PFUser currentUser].objectId]].firstObject;
+//                CLS_LOG(@"Existing conversation with %@", otherUser);
+//                [otherUser fetchInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+//                    if (!error) {
+//                        [self.cachedUsers setObject:object forKey:object.objectId];
+//                        CLS_LOG(@"Fetched %@", object.objectId);
+//                    }
+//                }];
+//            }
+//        }];
+//    }
     
     UIImage *image = [UIImage imageNamed:@"notification_none_icon"];
     self.chatButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -366,12 +365,12 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
 }
 
 
-- (void)pushNotificationReceived:(NSNotification*)aNotification
-{
-    self.barButton.badgeValue =
-        [NSString stringWithFormat:@"%d", [self.barButton.badgeValue intValue] + 1];
-    
-}
+//- (void)pushNotificationReceived:(NSNotification*)aNotification
+//{
+//    self.barButton.badgeValue =
+//        [NSString stringWithFormat:@"%d", [self.barButton.badgeValue intValue] + 1];
+//    
+//}
 
 - (void)nomatches:(NSNotification*)aNotification
 {
@@ -546,8 +545,6 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
 //        [self dropLocationPin];
 //    });
     
-    [self updateUserLocation];
-    
 //    UIImage *pinImage = [UIImage imageNamed:@"pin_icon"];
 //    CGPoint pinCenter = CGPointMake(self.mapView.center.x, self.mapView.center.y - pinImage.size.height/2.0f);
 //    CLLocation *pinLocation = [[CLLocation alloc] initWithLatitude:currentLocation.coordinate.latitude longitude:[self.mapView pixelToCoordinate:pinCenter].longitude];
@@ -558,38 +555,47 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
 - (void)updateUserLocation
 {
     assert(self.userLocation);
+    assert([PFUser currentUser]);
     PFGeoPoint *geoPoint = [PFGeoPoint geoPointWithLocation:self.userLocation];
     
     PFUser *currentUser = [PFUser currentUser];
     currentUser[@"Location"] = geoPoint;
     [[PFUser currentUser] saveInBackground];
     
-    // TEMP:
+    NSString *urlStr = [NSString stringWithFormat:@"%@latlng=%f,%f&sensor=true", REVERSE_GEO_CODING_URL, geoPoint.latitude, geoPoint.longitude];
     
-    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
-    [geocoder reverseGeocodeLocation:[[CLLocation alloc] initWithLatitude:geoPoint.latitude longitude:geoPoint.longitude]
-                   completionHandler:^(NSArray *placemarks, NSError *error) {
-        if (!error) {
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:[urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 
-            CLPlacemark *placemark = [placemarks firstObject];
-            //                               NSLog(@"placemark.administrativeArea %@",placemark.administrativeArea);
-            //                               NSLog(@"placemark.subAdministrativeArea %@", placemark.subAdministrativeArea);
-            //                               NSLog(@"placemark.locality %@",placemark.locality);
-            //                               NSLog(@"placemark.subLocality %@",placemark.subLocality);
-
-            if (placemark.locality) {
-               currentUser[@"city"] = placemark.locality;
-            } else if (placemark.administrativeArea) {
-               currentUser[@"city"] = placemark.administrativeArea;
-            } else {
-               currentUser[@"city"] = placemark.country;
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        if (!data) {
+            NSLog(@"%s: sendAynchronousRequest error: %@", __FUNCTION__, connectionError);
+            return;
+        } else if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
+            NSInteger statusCode = [(NSHTTPURLResponse *)response statusCode];
+            if (statusCode != 200) {
+                NSLog(@"%s: sendAsynchronousRequest status code != 200: response = %@", __FUNCTION__, response);
+                return;
             }
-
-            if (currentUser[@"city"])
-               [[PFUser currentUser] saveInBackground];
-        } else {
-            NSLog(@"Geocode failed with error: %@", error);
         }
+        
+        NSError *parseError = nil;
+        NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
+        if (!dictionary) {
+            NSLog(@"%s: JSONObjectWithData error: %@; data = %@", __FUNCTION__, parseError, [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+            return;
+        } else {
+            NSArray *results = dictionary[@"results"];
+            NSArray *components = [results firstObject][@"address_components"];
+            for (NSDictionary *component in components) {
+                NSArray *types = component[@"types"];
+                if ([types containsObject:@"locality"]) {
+                    currentUser[@"city"] = component[@"long_name"];
+                    [currentUser saveInBackground];
+                }
+            }
+        }
+        
+        // now you can use your `dictionary` object
     }];
 }
 
@@ -688,6 +694,17 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
     // user has logged in - we need to fetch all of their Facebook data before we let them in
     
 //    PFUser *usr = [PFUser currentUser];
+    [self updateUserLocation];
+    
+    __block NSNumber *totalCount = @(0);
+    PFQuery *query = [PFQuery queryWithClassName:@"Unread"];
+    [query whereKey:@"user" equalTo:[PFUser currentUser]];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        for (PFObject *object in objects) {
+            totalCount = @([totalCount intValue] + [object[@"count"] intValue]);
+        }
+        self.barButton.badgeValue = [NSString stringWithFormat:@"%@", totalCount];
+    }];
     
     [Crashlytics setUserIdentifier:[PFUser currentUser].objectId];
     
@@ -711,7 +728,16 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
             if (!error) {
                 PFObject *conversation = [PFObject objectWithClassName:@"Conversation"];
                 conversation[@"participants"] = [NSArray arrayWithObjects:[PFUser currentUser], (PFUser*)object, nil];
-                conversation[@"messageCount"] = @1;
+                PFObject *unreadNew = [PFObject objectWithClassName:@"Unread"];
+                unreadNew[@"conversation"] = conversation;
+                unreadNew[@"user"] = [PFUser currentUser];
+                unreadNew[@"count"] = @1;
+                [unreadNew saveEventually];
+                PFObject *unreadMe = [PFObject objectWithClassName:@"Unread"];
+                unreadMe[@"conversation"] = conversation;
+                unreadMe[@"user"] = object;
+                unreadMe[@"count"] = @0;
+                [unreadMe saveEventually];
                 [conversation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     if (!error) {
                         PFObject *message = [PFObject objectWithClassName:@"Message"];
@@ -806,7 +832,7 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
         destinationViewController.center = [PFGeoPoint geoPointWithLatitude:self.mapView.centerCoordinate.latitude longitude:self.mapView.centerCoordinate.longitude];
     } else if ([segue.identifier isEqualToString:@"segueListView"]) {
         ListTableViewController *lvc = segue.destinationViewController;
-        lvc.cachedUsers = self.cachedUsers;
+//        lvc.cachedUsers = self.cachedUsers;
     }
 }
 
