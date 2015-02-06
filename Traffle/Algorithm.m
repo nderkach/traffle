@@ -27,7 +27,7 @@
                 if (user[@"Location"] && user[@"city"] &&
                     ![user.objectId isEqualToString:[PFUser currentUser].objectId] &&
                     [user[@"Location"] distanceInKilometersTo:center] < radius &&
-                    ![[[NSUserDefaults standardUserDefaults] objectForKey:@"declinedUsers"] containsObject:user.objectId]) {
+                    ![currentUser[@"ignoredUsers"] containsObject:user.objectId]) {
                     NSLog(@"%@", user.objectId);
                     NSMutableSet *intersection = [NSMutableSet setWithArray:myLikes];
                     [intersection intersectSet:[NSSet setWithArray:user[@"fbLikes"]]];
@@ -43,14 +43,18 @@
                 
 //                NSString *randomId = keysByFrequency[arc4random_uniform([keysByFrequency count])];
                 
-                NSString *firstId = [keysByFrequency firstObject];
+                NSString *matchedId = [keysByFrequency firstObject];
+                
+                [currentUser[@"ignoredUsers"] addObject:matchedId];
+                [currentUser saveInBackground];
                 
                 PFQuery *query = [PFUser query];
-                [query getObjectInBackgroundWithId:firstId block:^(PFObject *object, NSError *error) {
+                [query getObjectInBackgroundWithId:matchedId block:^(PFObject *object, NSError *error) {
                     if (!error && completion) {
-                        NSMutableArray *declinedUsers = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] objectForKey:@"declinedUsers"]];
-                        [declinedUsers addObject:object.objectId];
-                        [[NSUserDefaults standardUserDefaults] setObject:declinedUsers forKey:@"declinedUsers"];                        [[NSUserDefaults standardUserDefaults] synchronize];
+//                        NSMutableArray *declinedUsers = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] objectForKey:@"declinedUsers"]];
+//                        [declinedUsers addObject:object.objectId];
+//                        [[NSUserDefaults standardUserDefaults] setObject:declinedUsers forKey:@"declinedUsers"];
+//                        [[NSUserDefaults standardUserDefaults] synchronize];
                         
                         completion( (PFUser*)object );
                     }
