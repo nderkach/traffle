@@ -100,7 +100,9 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     self.searchFilterDistance = [defaults integerForKey:SearchFilterDistancePrefsKey];
     
-    NSLog(@"defaults = %@", [defaults dictionaryRepresentation]);
+//    NSLog(@"defaults = %@", [defaults dictionaryRepresentation]);
+    
+    NSLog(@"default search distance: %ld", (long)self.searchFilterDistance);
 
 //    self.meetImage.image = [UIImage imageNamed:@"Meet Jenna in Barcelona"];
     

@@ -10,6 +10,7 @@
 #import <Crashlytics/Crashlytics.h>
 #import <Appsee/Appsee.h>
 #import <Reachability.h>
+#import <Mapbox-iOS-SDK/Mapbox.h>
 //#import <Lookback/Lookback.h>
 
 #import "TraffleAppDelegate.h"
@@ -28,6 +29,8 @@ NSString * const SearchFilterDistancePrefsKey = @"SearchFilterDistance";
     [PFFacebookUtils initializeFacebook];
 
     [Appsee start:@"831bd5c6fa334450909db1d5586fa367"];
+    
+    [RMConfiguration sharedInstance].accessToken = @"pk.eyJ1IjoibmRlcmthY2giLCJhIjoiRmhTM0wtayJ9.gUjWi8kjG_uUl0ckvJMUdw";
     
     [Crashlytics startWithAPIKey:@"86953a5b504233c5b2b755070e77d9702c2af50b"];
     
@@ -201,7 +204,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(vo
 + (void)initialize
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSDictionary *factorySettings = @{SearchFilterDistancePrefsKey: @1000};
+    NSDictionary *factorySettings = @{SearchFilterDistancePrefsKey: @1000}; //km
     [defaults registerDefaults:factorySettings];
 }
 

@@ -200,7 +200,7 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
 - (void)viewWillDisappear:(BOOL)animated
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    NSLog(@"Saving searchFilterDistance: %d", self.searchFilterDistance);
+    NSLog(@"Saving searchFilterDistance: %ld", (long)self.searchFilterDistance);
     
     [[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInteger:self.searchFilterDistance] forKey:SearchFilterDistancePrefsKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -298,6 +298,10 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
     self.mapView.showLogoBug = NO;
     self.mapView.showsUserLocation = YES;
     self.mapView.userTrackingMode = RMUserTrackingModeFollow;
+    self.mapView.maxZoom = 12;
+    [self.mapView setZoom:1.0f];
+    
+    NSLog(@"initial map zoom: %f", self.mapView.zoom);
 //    self.mapView.draggingEnabled = NO;
 //    self.mapView.zoomingInPivotsAroundCenter = YES;
     
@@ -481,6 +485,9 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
 
 - (void)afterMapZoom:(RMMapView *)map byUser:(BOOL)wasUserAction
 {
+    NSLog(@"afterMapZoom Map zoom: %f", self.mapView.zoom);
+    NSLog(@"self.searchFilterDistance: %ld", (long)self.searchFilterDistance);
+
     CLLocationCoordinate2D coord2d = [self.mapView pixelToCoordinate:CGPointMake(self.view.center.x + 160.0f, self.view.center.y)];
     CLLocation *coord = [[CLLocation alloc] initWithLatitude:coord2d.latitude longitude:coord2d.longitude];
     CLLocation *userCoord = [[CLLocation alloc] initWithLatitude:self.mapView.centerCoordinate.latitude longitude:self.mapView.centerCoordinate.longitude];
@@ -492,7 +499,6 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
 
     
     NSLog(@"Set search radius to %ld km", (long)self.searchFilterDistance);
-
 }
 
 //- (void)mapViewRegionDidChange:(RMMapView *)mapView
@@ -504,16 +510,24 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
-    CLS_LOG("Locations: %@", locations);
     CLLocation *currentLocation = [locations lastObject];
     
     NSLog(@"Location: %f %f", currentLocation.coordinate.latitude, currentLocation.coordinate.longitude);
+    NSLog(@"searchFilterDistance: %ld", self.searchFilterDistance);
     
     CLCoordinateRect searchRect = [CLLocation boundingBoxWithCenter:currentLocation.coordinate radius:self.searchFilterDistance * 1000];
     CLLocationCoordinate2D southWest = CLLocationCoordinate2DMake(searchRect.bottomRight.latitude, searchRect.topLeft.longitude);
     CLLocationCoordinate2D northEast = CLLocationCoordinate2DMake(searchRect.topLeft.latitude, searchRect.bottomRight.longitude);
     NSLog(@"Zooming to rect: %f %f, %f %f", southWest.latitude, southWest.longitude, northEast.latitude, northEast.longitude);
-    [self.mapView zoomWithLatitudeLongitudeBoundsSouthWest:southWest northEast:northEast animated:YES];
+    
+    NSLog(@"Map zoom: %f", self.mapView.zoom);
+    
+    [self.mapView zoomWithLatitudeLongitudeBoundsSouthWest:southWest northEast:northEast animated:NO];
+//    [self.mapView zoomByFactor:0.5 near:self.mapView.center animated:YES];
+    
+    NSLog(@"Map zoom: %f", self.mapView.zoom);
+    
+    
     //                            self.mapView.tileCache = self.tileCache;
     
     self.userLocation = currentLocation;
@@ -678,11 +692,13 @@ static NSString *mapId = @"nderkach.id089jd9"; // Elegant
                     };
                     [self.pinchingView pop_addAnimation:fanim forKey:@"fade"];
                     
-                    
+                    [self.mapView zoomByFactor:0.5 near:self.mapView.center animated:YES];
                 
                 } else {
                     
                     [self nomatches:nil];
+                    
+                    [self.mapView zoomByFactor:0.5 near:self.mapView.center animated:YES];
                 
                 }
             }
