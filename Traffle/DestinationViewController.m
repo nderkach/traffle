@@ -10,6 +10,7 @@
 #import <POP.h>
 #import <BBBadgeBarButtonItem.h>
 #import <Crashlytics/Crashlytics.h>
+#import <MBProgressHUD/MBProgressHUD.h>
 
 #import "DestinationViewController.h"
 #import "TraffleAppDelegate.h"
@@ -37,6 +38,7 @@
 @property (strong, nonatomic) UILabel *coolLabel;
 @property (nonatomic, strong) NSURL *userPhotoWebPageURL;
 @property (nonatomic, strong) PFObject *conversation;
+@property (strong, nonatomic) MBProgressHUD *progressHud;
 
 @end
 
@@ -299,8 +301,8 @@
 
 -(void)pop_animationDidStart:(POPAnimation *)anim
 {
-    NSLog(@"Hidden? %hhd %hhd %hhd %hhd", self.pictureMask.hidden, self.profilePicture.hidden, self.hangoutView.hidden, self.bethereLabel.hidden);
-    
+//    NSLog(@"Hidden? %hhd %hhd %hhd %hhd", self.pictureMask.hidden, self.profilePicture.hidden, self.hangoutView.hidden, self.bethereLabel.hidden);
+
     NSLog(@"Animation: %@", anim.name);
     if ([anim.name isEqualToString:@"PictureMaskAnimation"]) {
         self.pictureMask.hidden = NO;
@@ -358,6 +360,7 @@
 
 -(void)refreshScreen
 {
+    [self.progressHud hide:YES];
     self.hangoutView.hidden = NO;
     
     // Profile photo animation
@@ -367,6 +370,9 @@
     pmianim.toValue = @(-100.0f+self.pictureMaskCenterY-self.profilePictureCenterY);
     pmianim.duration = kProfilePicureAnimationDuration;
     pmianim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
+    pmianim.completionBlock = ^(POPAnimation *anim, BOOL finished) {
+        self.pictureMask.hidden = YES;
+    };
     
     POPBasicAnimation *pianim = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerPositionY];
     pianim.fromValue = @(self.profilePictureCenterY);
@@ -374,6 +380,7 @@
     pianim.duration = kProfilePicureAnimationDuration;
     pianim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
     pianim.completionBlock = ^(POPAnimation *anim, BOOL finished) {
+        self.profilePicture.hidden = YES;
         self.profilePicture.image = nil;
         [self presentProfilePhoto];
     };
@@ -388,6 +395,8 @@
     moanim.duration = kProfileTextAnimationDuration;
     moanim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
     moanim.completionBlock = ^(POPAnimation *anim, BOOL finished) {
+        self.hangoutView.hidden = YES;
+        self.hangoutView.hidden = YES;
         self.hangoutView.scrollOffset = 1;
         self.hangoutView.scrollEnabled = YES;
         self.bethereLabel.alpha = 1.0f;
@@ -696,6 +705,10 @@
 
 - (void)getNextMatch
 {
+    self.progressHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [self.progressHud setLabelText:@"Matching..."];
+    [self.progressHud setDimBackground:YES];
+    
     if (self.shakeonImageView.alpha) {
         POPBasicAnimation *fianim = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
         fianim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];

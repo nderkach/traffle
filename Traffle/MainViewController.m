@@ -654,7 +654,7 @@ static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
         }
         
         self.progressHud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-        [self.progressHud setLabelText:@"Loading..."];
+        [self.progressHud setLabelText:@"Matching..."];
         [self.progressHud setDimBackground:YES];
         
         CAKeyframeAnimation * anim = [ CAKeyframeAnimation animationWithKeyPath:@"transform" ] ;
@@ -693,17 +693,24 @@ static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
                     };
                     [self.pinchingView pop_addAnimation:fanim forKey:@"fade"];
                     
-                    [self.mapView zoomByFactor:0.5 near:self.mapView.center animated:YES];
+                    [self increaseScope:0.5f];
                 
                 } else {
                     
                     [self nomatches:nil];
                     
-                    [self.mapView zoomByFactor:0.5 near:self.mapView.center animated:YES];
-                
+                    [self increaseScope:0.5f];
                 }
             }
         }];
+    }
+}
+
+- (void)increaseScope:(float)factor {
+    if (self.mapView.zoom >= 2.0f) {
+        [self.mapView zoomByFactor:0.5f near:self.mapView.center animated:YES];
+    } else {
+        self.mapView.zoom = 1.0f;
     }
 }
 
