@@ -45,7 +45,11 @@
                 
                 NSString *matchedId = [keysByFrequency firstObject];
                 
-                [currentUser[@"ignoredUsers"] addObject:matchedId];
+                NSMutableArray *ignoredUsers = currentUser[@"ignoredUsers"];
+                if (!ignoredUsers)
+                    ignoredUsers = [[NSMutableArray alloc] init];
+                [ignoredUsers addObject:matchedId];
+                currentUser[@"ignoredUsers"] = ignoredUsers;
                 [currentUser saveInBackground];
                 
                 PFQuery *query = [PFUser query];

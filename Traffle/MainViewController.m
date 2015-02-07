@@ -27,8 +27,9 @@
 
 //static NSString *mapId = @"nderkach.gn10o7i5"; // Adventure
 //static NSString *mapId = @"nderkach.id0ea2i4"; // Adventure (realistic)
-static NSString *mapId = @"nderkach.id089jd9"; // Elegant
+//static NSString *mapId = @"nderkach.id089jd9"; // Elegant
 //static NSString *mapId = @"nderkach.id08bc55"; // Elegant (space)
+static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
 
 @interface CenterGestureRecognizer : UIPinchGestureRecognizer
 

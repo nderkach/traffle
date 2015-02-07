@@ -321,8 +321,9 @@
     if (self.incoming) {
         self.bethereLabel.hidden = YES;
     } else {
-        NSInteger distance = [[PFUser currentUser][@"Location"] distanceInKilometersTo:self.matchedUser[@"Location"]];
-        self.bethereLabel.attributedText = [self getBethereStringWithDistance:distance];
+//        NSInteger distance = [[PFUser currentUser][@"Location"] distanceInKilometersTo:self.matchedUser[@"Location"]];
+//        self.bethereLabel.attributedText = [self getBethereStringWithDistance:distance];
+        self.bethereLabel.text = @"";
     }
     
     POPBasicAnimation *mianim = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerPositionX];
@@ -766,7 +767,7 @@
         self.coolLabel.textAlignment = NSTextAlignmentCenter;
         self.coolLabel.font = [UIFont fontWithName:@"AvenirNextCondensed-Regular" size:33.5f];
         self.coolLabel.textColor = [UIColor whiteColor];
-        self.coolLabel.numberOfLines = 2;
+        self.coolLabel.numberOfLines = 3;
         self.coolLabel.text = [NSString stringWithFormat:@"Cool. We'll let %@ know!", self.matchedUser[@"Name"]];
         [self.hangoutView addSubview:self.coolLabel];
         POPBasicAnimation *canim = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerPositionY];
