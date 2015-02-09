@@ -167,7 +167,7 @@
         [self.acceptView addGestureRecognizer:pinch];
         
         UIImageView *closeButton = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"close_button"]];
-        closeButton.frame = CGRectMake(10, 10, 30, 30);
+        closeButton.frame = CGRectMake(20, 20, 20, 20);
         [self.acceptView addSubview:closeButton];
         
         [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"firstLaunchSwipe"];
@@ -580,7 +580,7 @@
         NSInteger numberOfBadges = currentInstallation.badge;
         if (numberOfBadges > 0) {
             numberOfBadges -= 1;
-            [currentInstallation saveEventually];
+            [currentInstallation saveInBackground];
         }
         
         self.barButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)numberOfBadges];
@@ -740,7 +740,7 @@
         NSInteger numberOfBadges = currentInstallation.badge;
         if (numberOfBadges > 0) {
             numberOfBadges -= 1;
-            [currentInstallation saveEventually];
+            [currentInstallation saveInBackground];
         }
         self.barButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)numberOfBadges];
         [[self.requests lastObject] setObject:@NO forKey:@"accepted"];

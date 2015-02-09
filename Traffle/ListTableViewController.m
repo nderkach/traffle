@@ -60,6 +60,12 @@ static int delay = 0.0;
 {
     [super viewDidLoad];
     
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage new]
+                                                  forBarMetrics:UIBarMetricsDefault];
+    self.navigationController.navigationBar.shadowImage = [UIImage new];
+    self.navigationController.navigationBar.translucent = YES;
+    self.navigationController.view.backgroundColor = [UIColor clearColor];
+    
     self.unreadCounts = [[NSMutableDictionary alloc] init];
     
     if (isiPhone5) {
@@ -139,12 +145,13 @@ static int delay = 0.0;
                      [conversations removeAllObjects];
                      [conversations addObjectsFromArray:fetchedConversations];
                      [self.tableConversations reloadData];
+
+                     [refreshControl endRefreshing];
+                     [self.progressHud hide:YES];
                  }];
 
              }
 //             else [ProgressHUD showError:@"Network error."];
-             [refreshControl endRefreshing];
-             [self.progressHud hide:YES];
          }];
     }
 }

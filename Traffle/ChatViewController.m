@@ -319,10 +319,10 @@
                      } else {
                          currentInstallation.badge = 0;
                      }
-                     [currentInstallation saveEventually];
+                     [currentInstallation saveInBackground];
                      
                      object[@"count"] = @0;
-                     [object saveEventually];
+                     [object saveInBackground];
                  }];
              }
              isLoading = NO;
@@ -397,13 +397,13 @@
              [query getFirstObjectInBackgroundWithBlock:^(PFObject *object, NSError *error) {
                  if (!error) {
                      [object incrementKey:@"count"];
-                     [object saveEventually];
+                     [object saveInBackground];
                  } else {
                      PFObject *new = [PFObject objectWithClassName:@"Unread"];
                      new[@"conversation"] = self.conversation;
                      new[@"user"] = self.recipient;
                      new[@"count"] = @1;
-                     [new saveEventually];
+                     [new saveInBackground];
                  }
              }];
          }

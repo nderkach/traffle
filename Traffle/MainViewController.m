@@ -170,7 +170,7 @@ static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
         self.shakeitView.hidden = NO;
 
         UIImageView *closeButton = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"close_button"]];
-        closeButton.frame = CGRectMake(10, 10, 30, 30);
+        closeButton.frame = CGRectMake(20, 20, 20, 20);
         [self.shakeitView addSubview:closeButton];
 
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(shakeitTapped)];
@@ -592,7 +592,7 @@ static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
     currentUser[@"Location"] = geoPoint;
     [[PFUser currentUser] saveInBackground];
     
-    NSString *urlStr = [NSString stringWithFormat:@"%@latlng=%f,%f&sensor=true", REVERSE_GEO_CODING_URL, geoPoint.latitude, geoPoint.longitude];
+    NSString *urlStr = [NSString stringWithFormat:@"%@latlng=%f,%f&language=en", REVERSE_GEO_CODING_URL, geoPoint.latitude, geoPoint.longitude];
     
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:[urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
 
@@ -692,7 +692,7 @@ static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
                     self.pinchingView.alpha = 0.0f;
                     self.pinchingView.hidden = NO;
                     UIImageView *closeButton = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"close_button"]];
-                    closeButton.frame = CGRectMake(10, 10, 30, 30);
+                    closeButton.frame = CGRectMake(20, 20, 20, 20);
                     [self.pinchingView addSubview:closeButton];
                     
                     POPBasicAnimation *fanim = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
@@ -806,12 +806,12 @@ static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
                 unreadNew[@"conversation"] = conversation;
                 unreadNew[@"user"] = [PFUser currentUser];
                 unreadNew[@"count"] = @1;
-                [unreadNew saveEventually];
+                [unreadNew saveInBackground];
                 PFObject *unreadMe = [PFObject objectWithClassName:@"Unread"];
                 unreadMe[@"conversation"] = conversation;
                 unreadMe[@"user"] = object;
                 unreadMe[@"count"] = @0;
-                [unreadMe saveEventually];
+                [unreadMe saveInBackground];
                 [conversation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                     if (!error) {
                         PFObject *message = [PFObject objectWithClassName:@"Message"];

@@ -65,6 +65,19 @@ NSString * const SearchFilterDistancePrefsKey = @"SearchFilterDistance";
     
 //    [Lookback_Weak setupWithAppToken:@"Fq2wzq8Tvv5y39ENN"];
     
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"])
+    {
+        // app already launched
+    }
+    else
+    {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+        currentInstallation[@"badge"] = @0;
+        [currentInstallation saveInBackground];
+    }
+    
     return YES;
 }
 
