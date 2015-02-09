@@ -7,6 +7,7 @@
 //
 
 #import <Parse/Parse.h>
+#import <Fabric/Fabric.h>
 #import <Crashlytics/Crashlytics.h>
 #import <Appsee/Appsee.h>
 #import <Reachability.h>
@@ -32,8 +33,8 @@ NSString * const SearchFilterDistancePrefsKey = @"SearchFilterDistance";
     
     [RMConfiguration sharedInstance].accessToken = @"pk.eyJ1IjoibmRlcmthY2giLCJhIjoiRmhTM0wtayJ9.gUjWi8kjG_uUl0ckvJMUdw";
     
-    [Crashlytics startWithAPIKey:@"86953a5b504233c5b2b755070e77d9702c2af50b"];
-    
+    [Fabric with:@[CrashlyticsKit]];
+
     // Register for push notifications
     if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)])
     {

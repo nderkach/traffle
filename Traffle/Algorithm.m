@@ -16,6 +16,7 @@
 + (void)findMatchWithinRadius:(NSInteger)radius center:(PFGeoPoint*)center completion:(void (^)(PFUser *matchedUser))completion
 {
     PFUser *currentUser = [PFUser currentUser];
+    [currentUser refreshInBackgroundWithBlock:^(PFObject *object, NSError *error) {}];
     NSArray *myLikes = currentUser[@"fbLikes"];
     
     PFQuery *query = [PFUser query];
@@ -28,7 +29,7 @@
                     ![user.objectId isEqualToString:[PFUser currentUser].objectId] &&
                     [user[@"Location"] distanceInKilometersTo:center] < radius &&
                     ![currentUser[@"ignoredUsers"] containsObject:user.objectId]) {
-                    NSLog(@"%@", user.objectId);
+//                    NSLog(@"%@", user.objectId);
                     NSMutableSet *intersection = [NSMutableSet setWithArray:myLikes];
                     [intersection intersectSet:[NSSet setWithArray:user[@"fbLikes"]]];
                     CLSLog(@"Match: Number of intersections: %@ intersection: %@", [NSNumber numberWithUnsignedInteger: [intersection count]], intersection);

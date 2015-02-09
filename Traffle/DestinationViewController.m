@@ -26,7 +26,6 @@
 @interface DestinationViewController ()
 
 @property (nonatomic) NSInteger searchFilterDistance;
-@property (nonatomic, strong) NSMutableArray *requests;
 @property(nonatomic, weak) NSTimer *timer;
 @property (strong, nonatomic) UIButton *chatButton;
 @property (strong, nonatomic) BBBadgeBarButtonItem *barButton;
@@ -50,10 +49,11 @@
     // Do any additional setup after loading the view.
     
     if (self.incoming) {
-        PFQuery *query = [PFQuery queryWithClassName:@"Request"];
-        [query whereKey:@"accepted" equalTo:[NSNull null]];
-        [query whereKey:@"toUser" equalTo:[PFUser currentUser]];
-        self.requests = [[NSMutableArray alloc] initWithArray:[query findObjects]];
+        assert([self.requests count]);
+//        PFQuery *query = [PFQuery queryWithClassName:@"Request"];
+//        [query whereKey:@"accepted" equalTo:[NSNull null]];
+//        [query whereKey:@"toUser" equalTo:[PFUser currentUser]];
+//        self.requests = [[NSMutableArray alloc] initWithArray:[query findObjects]];
         
         self.matchedUser = [self.requests lastObject][@"fromUser"];
         [self.matchedUser fetchIfNeeded];
@@ -303,7 +303,7 @@
 {
 //    NSLog(@"Hidden? %hhd %hhd %hhd %hhd", self.pictureMask.hidden, self.profilePicture.hidden, self.hangoutView.hidden, self.bethereLabel.hidden);
 
-    NSLog(@"Animation: %@", anim.name);
+//    NSLog(@"Animation: %@", anim.name);
     if ([anim.name isEqualToString:@"PictureMaskAnimation"]) {
         self.pictureMask.hidden = NO;
     } else if ([anim.name isEqualToString:@"ProfilePictureAnimation"]) {
@@ -436,7 +436,6 @@
     } else {
 
         hangoutString = [[NSMutableAttributedString alloc] initWithString:@"Hang out with " attributes:avenirFontRegularDict];
-        
         [hangoutString appendAttributedString:nameString];
         [hangoutString appendAttributedString:[[NSAttributedString alloc] initWithString:@" in " attributes:avenirFontRegularDict]];
         [hangoutString appendAttributedString:cityString];
@@ -591,24 +590,6 @@
             
             [self.requests removeLastObject];
             
-            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
-                                  [NSString stringWithFormat:@"%@ accepted you request!", [PFUser currentUser][@"Name"]], @"alert",
-                                  @"Increment", @"badge",
-                                  @"request", @"type",
-                                  [NSString stringWithFormat:@"%@", [PFUser currentUser].objectId], @"from",
-                                  nil];
-            
-            // Now we’ll need to query all saved installations to find those of our recipients
-            // Create our Installation query using the self.recipients array we already have
-            PFQuery *pushQuery = [PFInstallation query];
-            [pushQuery whereKey:@"installationUser" equalTo:self.matchedUser.objectId];
-            
-            // Send push notification to our query
-            PFPush *push = [[PFPush alloc] init];
-            [push setQuery:pushQuery];
-            [push setData:data];
-            [push sendPushInBackground];
-            
 //            PFInstallation *currentInstallation = [PFInstallation currentInstallation];
 //            NSLog(@"%d", currentInstallation.badge);
 //            //FIXME: teporarilly
@@ -631,6 +612,27 @@
             [conversation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                 self.conversation = conversation;
                 [self performSegueWithIdentifier:@"seguePushChatWhenAccepted" sender:self];
+                
+                NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
+                                      [NSString stringWithFormat:@"%@ accepted you request!", [PFUser currentUser][@"Name"]], @"alert",
+                                      @"Increment", @"badge",
+                                      @"message", @"type",
+                                      @1, @"content-available",
+                                      [NSString stringWithFormat:@"%@", [PFUser currentUser].objectId], @"from",
+                                      [NSString stringWithFormat:@"%@", self.conversation.objectId], @"conversation",
+                                      @"can i haz traffle?", @"text",
+                                      nil];
+                
+                // Now we’ll need to query all saved installations to find those of our recipients
+                // Create our Installation query using the self.recipients array we already have
+                PFQuery *pushQuery = [PFInstallation query];
+                [pushQuery whereKey:@"installationUser" equalTo:self.matchedUser.objectId];
+                
+                // Send push notification to our query
+                PFPush *push = [[PFPush alloc] init];
+                [push setQuery:pushQuery];
+                [push setData:data];
+                [push sendPushInBackground];
             }];
         }];
     } else {
@@ -842,7 +844,7 @@
             [self.matchedUser fetchIfNeeded];
             CLS_LOG(@"Matched user: %@ incoming: %hhd", self.matchedUser, self.incoming);
             self.hangoutLabel = [[UILabel alloc] initWithFrame:CGRectInset(newView.frame, 20.0f, 0.0f)];
-            self.hangoutLabel.numberOfLines = 2;
+            self.hangoutLabel.numberOfLines = 3;
             self.hangoutLabel.textAlignment = NSTextAlignmentCenter;
             self.hangoutLabel.textColor = [UIColor whiteColor];
             self.hangoutLabel.tag = 1;

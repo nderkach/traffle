@@ -24,6 +24,7 @@
 @property (strong, nonatomic) IBOutlet UIImageView *backgroundPhotoWithImageEffects;
 @property (strong, nonatomic) IBOutlet UIImageView *shakeonImageView;
 @property (strong, nonatomic) IBOutlet UIButton *copyrightButton;
+@property (nonatomic, strong) NSMutableArray *requests;
 
 //- (IBAction)photoClicked:(id)sender;
 //- (IBAction)inviteClicked:(id)sender;

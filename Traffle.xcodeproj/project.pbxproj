@@ -34,6 +34,7 @@
 		ED3F6A6D1929752A002C349C /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED3F6A6C1929752A002C349C /* MainViewController.m */; };
 		ED3F6A7119299C7F002C349C /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED3F6A7019299C7F002C349C /* Social.framework */; };
 		ED62594A194EDCA5005EFA9B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ED3F6A3619296EDA002C349C /* Images.xcassets */; };
+		ED63C48A1A877C5E007A391B /* Fabric.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED63C4891A877C5E007A391B /* Fabric.framework */; };
 		ED98446919402F0E00096791 /* UIImage+Alpha.m in Sources */ = {isa = PBXBuildFile; fileRef = ED98444519402F0E00096791 /* UIImage+Alpha.m */; };
 		ED98446A19402F0E00096791 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = ED98444719402F0E00096791 /* UIImage+ImageEffects.m */; };
 		ED98446C19402F0E00096791 /* UIImage+RoundedCorner.m in Sources */ = {isa = PBXBuildFile; fileRef = ED98444B19402F0E00096791 /* UIImage+RoundedCorner.m */; };
@@ -92,6 +93,7 @@
 		ED3F6A7019299C7F002C349C /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		ED42EED5192ABD7F00613416 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 		ED42EED6192ABD7F00613416 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
+		ED63C4891A877C5E007A391B /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		ED98444419402F0E00096791 /* UIImage+Alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Alpha.h"; sourceTree = "<group>"; };
 		ED98444519402F0E00096791 /* UIImage+Alpha.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Alpha.m"; sourceTree = "<group>"; };
 		ED98444619402F0E00096791 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
@@ -142,6 +144,7 @@
 				ED3F6A5A1929731E002C349C /* Security.framework in Frameworks */,
 				ED3F6A5819297317002C349C /* SystemConfiguration.framework in Frameworks */,
 				ED3F6A2719296ED9002C349C /* CoreGraphics.framework in Frameworks */,
+				ED63C48A1A877C5E007A391B /* Fabric.framework in Frameworks */,
 				ED32276F192DBBCF009E6B99 /* Appsee.framework in Frameworks */,
 				ED3F6A5619297203002C349C /* FacebookSDK.framework in Frameworks */,
 				ED3F6A2919296ED9002C349C /* UIKit.framework in Frameworks */,
@@ -166,6 +169,7 @@
 		ED3F6A1819296ED9002C349C = {
 			isa = PBXGroup;
 			children = (
+				ED63C4891A877C5E007A391B /* Fabric.framework */,
 				ED9C3A7C193827BB00AF0B62 /* Utils */,
 				ED3F6A2A19296ED9002C349C /* Traffle */,
 				ED3F6A2319296ED9002C349C /* Frameworks */,
@@ -413,7 +417,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "./Crashlytics.framework/run 86953a5b504233c5b2b755070e77d9702c2af50b 07cabddbe99e92ac858716dc480bc8089d95544a612eb6179f2af171a660c7b0";
+			shellScript = "./Fabric.framework/run 86953a5b504233c5b2b755070e77d9702c2af50b 07cabddbe99e92ac858716dc480bc8089d95544a612eb6179f2af171a660c7b0";
 		};
 		ED322776192E8AA1009E6B99 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;

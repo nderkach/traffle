@@ -45,6 +45,7 @@ static int delay = 0.0;
 @property (strong, nonatomic) NSMutableArray *users;
 @property (strong, nonatomic) MBProgressHUD *progressHud;
 @property (strong, nonatomic) NSMutableDictionary *unreadCounts;
+@property (strong, nonatomic) NSArray *incomingRequests;
 
 @end
 
@@ -155,6 +156,7 @@ static int delay = 0.0;
     PFQuery *query = [PFQuery queryWithClassName:@"Request"];
     [query whereKey:@"accepted" equalTo:[NSNull null]];
     [query whereKey:@"toUser" equalTo:[PFUser currentUser]];
+    [query includeKey:@"fromUser"];
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if ([objects count]) {
             UIFont *avenirFont = [UIFont fontWithName:@"AvenirNextCondensed-Regular" size:17.5f];
@@ -174,6 +176,7 @@ static int delay = 0.0;
             [finalString appendAttributedString:notString];
             [self.showUnreadRequestsButton setAttributedTitle:finalString forState:UIControlStateNormal];
             self.showUnreadRequestsButton.hidden = NO;
+            self.incomingRequests = objects;
         }
         else {
             self.showUnreadRequestsButton.hidden = YES;
@@ -404,6 +407,7 @@ static int delay = 0.0;
         UINavigationController *navigationViewController = segue.destinationViewController;
         DestinationViewController *destinationViewController = (DestinationViewController*)navigationViewController.topViewController;
         destinationViewController.incoming = YES;
+        destinationViewController.requests = [[NSMutableArray alloc] initWithArray:self.incomingRequests];
     }
 }
 

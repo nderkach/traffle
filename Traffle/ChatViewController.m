@@ -150,10 +150,19 @@
     messages = [[NSMutableArray alloc] init];
     avatars = [[NSMutableDictionary alloc] init];
     
-    UIFont *avenirFont = [UIFont fontWithName:@"AvenirNextCondensed-Regular" size:20.5f];
-    self.collectionView.collectionViewLayout.messageBubbleFont = avenirFont;
+    PFUser *user = [PFUser currentUser];
+    self.senderId = user.objectId;
+    self.senderDisplayName = user[@"Name"];
+    
+//    UIFont *avenirFont = [UIFont fontWithName:@"AvenirNextCondensed-Regular" size:15.0f];
+    UIFont *regularFont = [UIFont systemFontOfSize:15.0f];
+    self.collectionView.collectionViewLayout.messageBubbleFont = regularFont;
     self.recipient = [self.conversation[@"participants"] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.objectId != %@", [PFUser currentUser].objectId]].firstObject;
-    self.title = self.recipient[@"Name"];
+    [self.recipient fetchIfNeededInBackgroundWithBlock:^(PFObject *object, NSError *error) {
+        self.title = self.recipient[@"Name"];
+    }];
+    
+    avatarImageBlank = [JSQMessagesAvatarImageFactory avatarImageWithImage:[UIImage imageNamed:@"chat_blank"] diameter:30.0];
 //    self.sender = [PFUser currentUser].username;
     
 //    self.avatars = [[NSMutableDictionary alloc] init];
@@ -214,7 +223,7 @@
     JSQMessagesBubbleImageFactory *bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
 
     bubbleImageOutgoing = [bubbleFactory
-                                    incomingMessagesBubbleImageWithColor:kTraffleMainColor];
+                                    outgoingMessagesBubbleImageWithColor:kTraffleMainColor];
     
     bubbleImageIncoming = [bubbleFactory
                                     incomingMessagesBubbleImageWithColor:[UIColor whiteColor]];
@@ -223,7 +232,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    self.collectionView.collectionViewLayout.springinessEnabled = YES;
+//    self.collectionView.collectionViewLayout.springinessEnabled = YES;
     timer = [NSTimer scheduledTimerWithTimeInterval:5.0 target:self selector:@selector(loadMessages) userInfo:nil repeats:YES];
 }
 
@@ -243,7 +252,7 @@
     if (object[@"picture"] != nil)
     {
         JSQPhotoMediaItem *mediaItem = [[JSQPhotoMediaItem alloc] initWithImage:nil];
-        mediaItem.appliesMediaViewMaskAsOutgoing = ![user.objectId isEqualToString:[PFUser currentUser].objectId];
+        mediaItem.appliesMediaViewMaskAsOutgoing = [user.objectId isEqualToString:[PFUser currentUser].objectId];
         JSQMessage *message = [[JSQMessage alloc] initWithSenderId:user.objectId senderDisplayName:user[@"Name"] date:object.createdAt media:mediaItem];
         [messages addObject:message];
 
@@ -277,15 +286,24 @@
          {
              if (error == nil)
              {
+                 bool receivedAny = NO;
                  self.automaticallyScrollsToMostRecentMessage = NO;
-                 for (PFObject *object in [objects reverseObjectEnumerator])
+                 for (id msg in [objects reverseObjectEnumerator])
                  {
-                     [self addMessage:object];
+                     PFUser *sender = ((PFObject*)msg)[@"sender"];
+                     PFUser *currentUser = [PFUser currentUser];
+                     if (![sender.objectId isEqualToString:currentUser.objectId]) {
+                         receivedAny = YES;
+                     }
+                     [self addMessage:msg];
                  }
                  if ([objects count] != 0)
                  {
                      [self finishReceivingMessage];
                      [self scrollToBottomAnimated:NO];
+                     if (receivedAny) {
+                        [JSQSystemSoundPlayer jsq_playMessageReceivedSound];
+                     }
                  }
                  self.automaticallyScrollsToMostRecentMessage = YES;
                  
@@ -318,6 +336,8 @@
 //-------------------------------------------------------------------------------------------------------------------------------------------------
 {
     JSQMessage *message = messages[indexPath.item];
+    
+    NSLog(@"messageBubbleImageDataForItemAtIndexPath: %@", message.senderId);
     if ([message.senderId isEqualToString:[PFUser currentUser].objectId])
     {
         return bubbleImageOutgoing;

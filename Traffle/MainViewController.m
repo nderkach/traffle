@@ -142,6 +142,7 @@ static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
 @property (strong, nonatomic) RMAnnotation *dropPin;
 @property (nonatomic) CenterGestureRecognizer *pinch;
 //@property (strong, nonatomic) NSMutableDictionary *cachedUsers;
+@property (atomic) BOOL matching;
 
 @end
 
@@ -159,6 +160,8 @@ static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    self.matching = NO;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotificationReceived:) name:@"pushNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(nomatches:) name:@"nomatches" object:nil];
@@ -188,6 +191,8 @@ static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
         currentInstallation[@"installationUser"] = [[PFUser currentUser] objectId];
         [currentInstallation saveInBackground];
         
+        [self updateFbPhoto];
+        
         [Crashlytics setUserIdentifier:[PFUser currentUser].objectId];
         [Crashlytics setUserName:[PFUser currentUser][@"Name"]];
         [Crashlytics setUserEmail:[PFUser currentUser][@"email"]];
@@ -207,6 +212,8 @@ static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     [self.progressHud hide:YES];
+    
+    self.matching = NO;
     
     [super viewWillDisappear:animated];
 }
@@ -570,6 +577,9 @@ static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
 //    CLLocation *pinLocation = [[CLLocation alloc] initWithLatitude:currentLocation.coordinate.latitude longitude:[self.mapView pixelToCoordinate:pinCenter].longitude];
 //    self.dropPin.coordinate = pinLocation.coordinate;
     
+    if ([PFUser currentUser]) {
+        [self updateUserLocation];
+    }
 }
 
 - (void)updateUserLocation
@@ -646,8 +656,10 @@ static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
 
 - (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event
 {
-    if (motion == UIEventSubtypeMotionShake) {
+    if (motion == UIEventSubtypeMotionShake && !self.matching) {
         NSLog(@"Device started shaking!");
+        
+        self.matching = YES;
         
         if (!self.shakeitView.hidden) {
             [self shakeitTapped];
@@ -679,6 +691,10 @@ static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
                     [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO],@"firstNomatch",nil]];
                     self.pinchingView.alpha = 0.0f;
                     self.pinchingView.hidden = NO;
+                    UIImageView *closeButton = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"close_button"]];
+                    closeButton.frame = CGRectMake(10, 10, 30, 30);
+                    [self.pinchingView addSubview:closeButton];
+                    
                     POPBasicAnimation *fanim = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
                     fanim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
                     fanim.fromValue = @(0.0);
@@ -717,13 +733,41 @@ static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
 - (void)logInViewController:(PFLogInViewController *)logInController didFailToLogInWithError:(NSError *)error
 {
     NSLog(@"%@", error);
+    if ([[[error userInfo] objectForKey:@"com.facebook.sdk:ErrorLoginFailedReason"] isEqualToString:@"com.facebook.sdk:SystemLoginDisallowedWithoutError"]) {
+
+        [[[UIAlertView alloc] initWithTitle:@"Allow Traffle to login with Facebook"
+                                    message:@"Enable login in Settings > Facebook > Traffle and retry."
+                                   delegate:nil
+                          cancelButtonTitle:@"OK"
+                          otherButtonTitles:nil] show];
+    }
+}
+
+- (void)updateFbPhoto {
+    [FBRequestConnection startWithGraphPath:@"/me?fields=email,cover,picture.type(large),first_name" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+        if (!error) {
+            if (result[@"picture"]) {
+                
+                NSURL* url = [NSURL URLWithString:result[@"picture"][@"data"][@"url"]];
+                NSData *data = [NSData dataWithContentsOfURL:url];
+                PFFile *file = [PFFile fileWithData:data];
+                
+                [file saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                    [[PFUser currentUser] setObject:file forKey:@"Photo"];
+                    [[PFUser currentUser] saveInBackground];
+                }];
+            }
+        }
+    }];
 }
 
 - (void)logInViewController:(PFLogInViewController *)logInController didLogInUser:(PFUser *)user {
     // user has logged in - we need to fetch all of their Facebook data before we let them in
     
 //    PFUser *usr = [PFUser currentUser];
-    [self updateUserLocation];
+    if (self.userLocation) {
+        [self updateUserLocation];
+    }
     
     __block NSNumber *totalCount = @(0);
     PFQuery *query = [PFQuery queryWithClassName:@"Unread"];
@@ -743,6 +787,7 @@ static NSString *mapId = @"nderkach.l59b1a98"; //ARRRRRR
     
     if (![user isNew]) {
         [self.navigationController popViewControllerAnimated:YES];
+        [self updateFbPhoto];
         NSLog(@"user exists");
         
     } else {
