@@ -1,9 +1,9 @@
 //
 //  Algorithm.m
-//  Pods
+//  Traffle
 //
-//  Created by Nikolay Derkach on 16/06/14.
-//
+//  Created by Nikolay Derkach on 28/05/14.
+//  Copyright (c) 2014 Nikolay Derkach. All rights reserved.
 //
 
 #import "Algorithm.h"
@@ -29,7 +29,6 @@
                     ![user.objectId isEqualToString:[PFUser currentUser].objectId] &&
                     [user[@"Location"] distanceInKilometersTo:center] < radius &&
                     ![currentUser[@"ignoredUsers"] containsObject:user.objectId]) {
-//                    NSLog(@"%@", user.objectId);
                     NSMutableSet *intersection = [NSMutableSet setWithArray:myLikes];
                     [intersection intersectSet:[NSSet setWithArray:user[@"fbLikes"]]];
                     CLSLog(@"Match: Number of intersections: %@ intersection: %@", [NSNumber numberWithUnsignedInteger: [intersection count]], intersection);
@@ -43,7 +42,6 @@
                 }];
                 
 //                NSString *randomId = keysByFrequency[arc4random_uniform([keysByFrequency count])];
-                
                 NSString *matchedId = [keysByFrequency firstObject];
                 
                 NSMutableArray *ignoredUsers = currentUser[@"ignoredUsers"];
@@ -56,11 +54,6 @@
                 PFQuery *query = [PFUser query];
                 [query getObjectInBackgroundWithId:matchedId block:^(PFObject *object, NSError *error) {
                     if (!error && completion) {
-//                        NSMutableArray *declinedUsers = [NSMutableArray arrayWithArray:[[NSUserDefaults standardUserDefaults] objectForKey:@"declinedUsers"]];
-//                        [declinedUsers addObject:object.objectId];
-//                        [[NSUserDefaults standardUserDefaults] setObject:declinedUsers forKey:@"declinedUsers"];
-//                        [[NSUserDefaults standardUserDefaults] synchronize];
-                        
                         completion( (PFUser*)object );
                     }
                 }];
@@ -68,7 +61,6 @@
                 completion(nil);
             }
         } else {
-            // Log details of the failure
             NSLog(@"Error: %@ %@", error, [error userInfo]);
         }
     }];

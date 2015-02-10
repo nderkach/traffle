@@ -11,7 +11,7 @@
 
 #import "ChatViewController.h"
 
-@interface DestinationViewController : UIViewController <ChatViewControllerDelegate, SwipeViewDataSource, SwipeViewDelegate>
+@interface DestinationViewController: UIViewController <ChatViewControllerDelegate, SwipeViewDataSource, SwipeViewDelegate>
 
 @property (strong, nonatomic) PFUser *matchedUser;
 @property (strong, nonatomic) PFGeoPoint *center;
@@ -24,12 +24,9 @@
 @property (strong, nonatomic) IBOutlet UIImageView *backgroundPhotoWithImageEffects;
 @property (strong, nonatomic) IBOutlet UIImageView *shakeonImageView;
 @property (strong, nonatomic) IBOutlet UIButton *copyrightButton;
-@property (nonatomic, strong) NSMutableArray *requests;
+@property (strong, nonatomic) NSMutableArray *requests;
 
-//- (IBAction)photoClicked:(id)sender;
-//- (IBAction)inviteClicked:(id)sender;
-
-- (IBAction) launchFlickrUserPhotoWebPage:(id) sender;
+- (IBAction) launchFlickrUserPhotoWebPage:(id)sender;
 
 @property (nonatomic) BOOL incoming;
 

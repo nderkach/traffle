@@ -42,7 +42,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "ED2312FC196D06E500AB99DF"
+               BlueprintIdentifier = "ED291C801A89C08F0033F480"
                BuildableName = "Traffle Tests.xctest"
                BlueprintName = "Traffle Tests"
                ReferencedContainer = "container:Traffle.xcodeproj">

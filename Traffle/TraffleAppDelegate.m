@@ -60,8 +60,8 @@ NSString * const SearchFilterDistancePrefsKey = @"SearchFilterDistance";
     
     [reach startNotifier];
     
-    [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],@"firstLaunchPinch",nil]];
-    [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],@"firstLaunchSwipe",nil]];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], @"firstLaunchPinch", nil]];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], @"firstLaunchSwipe", nil]];
     
 //    [Lookback_Weak setupWithAppToken:@"Fq2wzq8Tvv5y39ENN"];
     
@@ -148,24 +148,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken {
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:newDeviceToken];
     [currentInstallation saveInBackground];
-
-//    [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-//        if (!error) {
-//            // Temp: reset currentinstallation
-//            CLSLog(@"current installation object id: %@", currentInstallation.objectId);
-//            [PFCloud callFunctionInBackground:@"badgeCount"
-//                               withParameters:@{@"currentInstallation": currentInstallation.objectId}
-//                                        block:^(NSNumber *count, NSError *error) {
-//                                            if (!error) {
-//                                                [PFInstallation currentInstallation].badge = [count intValue];
-//                                                NSLog(@"[PFInstallation currentInstallation].badge: %ld", (long)[PFInstallation currentInstallation].badge);
-//                                                [[UIApplication sharedApplication] setApplicationIconBadgeNumber:[PFInstallation currentInstallation].badge];
-//                                            }
-//                                        }];
-//        } else {
-//            CLS_LOG(@"current installation saving failed: %@", error);
-//        }
-//    }];
 }
 
 - (void)didDismissChatViewController:(ChatViewController *)vc
@@ -175,8 +157,6 @@ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)newDeviceToken {
 - (void)application:(UIApplication *)application
 didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    CLS_LOG(@"Userinfo: %@", userInfo);
-    
     if ([userInfo[@"aps"] objectForKey:@"badge"]) {
         NSInteger badgeNumber = [[userInfo[@"aps"] objectForKey:@"badge"] integerValue];
         CLS_LOG(@"Push notification received, set badge count to: %ld", (long)badgeNumber);

@@ -8,8 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		17F562B7F8E14282BF236EE2 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 732B2E42641B45C6876FD7AF /* libPods.a */; };
+		18C3C07327E4E3626D025B07 /* libPods-Traffle Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A180392A8AADB019CC239049 /* libPods-Traffle Tests.a */; };
+		ED291C8E1A89C2E90033F480 /* camera.m in Sources */ = {isa = PBXBuildFile; fileRef = ED291C8D1A89C2E90033F480 /* camera.m */; };
+		ED291C901A89C3A40033F480 /* LoginTests.m in Sources */ = {isa = PBXBuildFile; fileRef = ED291C8F1A89C3A40033F480 /* LoginTests.m */; };
+		ED291C921A8A06CD0033F480 /* Appsee.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED291C911A8A06CD0033F480 /* Appsee.framework */; };
 		ED2FC4A3194E5B2A00181DB7 /* Algorithm.m in Sources */ = {isa = PBXBuildFile; fileRef = ED2FC4A2194E5B2A00181DB7 /* Algorithm.m */; };
-		ED32276F192DBBCF009E6B99 /* Appsee.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED32276E192DBBCF009E6B99 /* Appsee.framework */; };
 		ED322771192DBBF2009E6B99 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED322770192DBBF2009E6B99 /* AVFoundation.framework */; };
 		ED322773192DBBFE009E6B99 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED322772192DBBFE009E6B99 /* CoreMedia.framework */; };
 		ED322775192DBC08009E6B99 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED322774192DBC08009E6B99 /* CoreVideo.framework */; };
@@ -45,19 +48,36 @@
 		ED98447119402F0E00096791 /* CBGUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = ED98445719402F0E00096791 /* CBGUtil.m */; };
 		ED9C3A3A19368B9300AF0B62 /* ListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9C3A3919368B9300AF0B62 /* ListTableViewController.m */; };
 		ED9C3A7F193827F000AF0B62 /* CLLocation+measuring.m in Sources */ = {isa = PBXBuildFile; fileRef = ED9C3A7E193827F000AF0B62 /* CLLocation+measuring.m */; };
-		EDA90ECF1A834ABA008F990A /* camera.m in Sources */ = {isa = PBXBuildFile; fileRef = EDA90ECE1A834ABA008F990A /* camera.m */; };
 		EDB23B0E198603350085746E /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ED42EED6192ABD7F00613416 /* ChatViewController.m */; };
 		EDBAF7871929D0A70027C4D4 /* DestinationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EDBAF7861929D0A70027C4D4 /* DestinationViewController.m */; };
 		EDCABE8D194F553B00E5FDC6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = ED3F6A69192974EE002C349C /* Main.storyboard */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		ED291C871A89C0900033F480 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ED3F6A1919296ED9002C349C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ED3F6A2019296ED9002C349C;
+			remoteInfo = Traffle;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		247430B5582A6258764C6C5E /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		2C79D553AEDBF2B5E45C66E8 /* Pods-Traffle Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Traffle Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Traffle Tests/Pods-Traffle Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		732B2E42641B45C6876FD7AF /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		832D085A012D630F4AE38CBE /* Pods-Traffle Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Traffle Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Traffle Tests/Pods-Traffle Tests.release.xcconfig"; sourceTree = "<group>"; };
+		A180392A8AADB019CC239049 /* libPods-Traffle Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Traffle Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED291C811A89C08F0033F480 /* Traffle Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Traffle Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		ED291C841A89C0900033F480 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ED291C8C1A89C2E90033F480 /* camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = camera.h; path = Traffle/camera.h; sourceTree = "<group>"; };
+		ED291C8D1A89C2E90033F480 /* camera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = camera.m; path = Traffle/camera.m; sourceTree = "<group>"; };
+		ED291C8F1A89C3A40033F480 /* LoginTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginTests.m; sourceTree = "<group>"; };
+		ED291C911A8A06CD0033F480 /* Appsee.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Appsee.framework; sourceTree = "<group>"; };
 		ED2FC4A1194E5B2A00181DB7 /* Algorithm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Algorithm.h; sourceTree = "<group>"; };
 		ED2FC4A2194E5B2A00181DB7 /* Algorithm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Algorithm.m; sourceTree = "<group>"; };
 		ED32276C192DBA6B009E6B99 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
-		ED32276E192DBBCF009E6B99 /* Appsee.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Appsee.framework; sourceTree = "<group>"; };
 		ED322770192DBBF2009E6B99 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		ED322772192DBBFE009E6B99 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		ED322774192DBC08009E6B99 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
@@ -118,14 +138,20 @@
 		ED9C3A7D193827F000AF0B62 /* CLLocation+measuring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CLLocation+measuring.h"; sourceTree = "<group>"; };
 		ED9C3A7E193827F000AF0B62 /* CLLocation+measuring.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CLLocation+measuring.m"; sourceTree = "<group>"; };
 		ED9C3A8019382A1B00AF0B62 /* CLUtilsDefines.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CLUtilsDefines.h; sourceTree = "<group>"; };
-		EDA90ECD1A834ABA008F990A /* camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
-		EDA90ECE1A834ABA008F990A /* camera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = camera.m; sourceTree = "<group>"; };
 		EDBAF7851929D0A70027C4D4 /* DestinationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DestinationViewController.h; sourceTree = "<group>"; };
 		EDBAF7861929D0A70027C4D4 /* DestinationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DestinationViewController.m; sourceTree = "<group>"; };
 		FE29867EFAE14D437275E077 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		ED291C7E1A89C08F0033F480 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18C3C07327E4E3626D025B07 /* libPods-Traffle Tests.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		ED3F6A1E19296ED9002C349C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -142,10 +168,10 @@
 				ED3F6A5E19297333002C349C /* QuartzCore.framework in Frameworks */,
 				ED322778192FDE87009E6B99 /* Crashlytics.framework in Frameworks */,
 				ED3F6A5A1929731E002C349C /* Security.framework in Frameworks */,
+				ED291C921A8A06CD0033F480 /* Appsee.framework in Frameworks */,
 				ED3F6A5819297317002C349C /* SystemConfiguration.framework in Frameworks */,
 				ED3F6A2719296ED9002C349C /* CoreGraphics.framework in Frameworks */,
 				ED63C48A1A877C5E007A391B /* Fabric.framework in Frameworks */,
-				ED32276F192DBBCF009E6B99 /* Appsee.framework in Frameworks */,
 				ED3F6A5619297203002C349C /* FacebookSDK.framework in Frameworks */,
 				ED3F6A2919296ED9002C349C /* UIKit.framework in Frameworks */,
 				ED3F6A5419296FE3002C349C /* Parse.framework in Frameworks */,
@@ -162,16 +188,35 @@
 			children = (
 				247430B5582A6258764C6C5E /* Pods.debug.xcconfig */,
 				FE29867EFAE14D437275E077 /* Pods.release.xcconfig */,
+				2C79D553AEDBF2B5E45C66E8 /* Pods-Traffle Tests.debug.xcconfig */,
+				832D085A012D630F4AE38CBE /* Pods-Traffle Tests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		ED291C821A89C0900033F480 /* Traffle Tests */ = {
+			isa = PBXGroup;
+			children = (
+				ED291C831A89C0900033F480 /* Supporting Files */,
+				ED291C8F1A89C3A40033F480 /* LoginTests.m */,
+			);
+			path = "Traffle Tests";
+			sourceTree = "<group>";
+		};
+		ED291C831A89C0900033F480 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				ED291C841A89C0900033F480 /* Info.plist */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		ED3F6A1819296ED9002C349C = {
 			isa = PBXGroup;
 			children = (
-				ED63C4891A877C5E007A391B /* Fabric.framework */,
 				ED9C3A7C193827BB00AF0B62 /* Utils */,
 				ED3F6A2A19296ED9002C349C /* Traffle */,
+				ED291C821A89C0900033F480 /* Traffle Tests */,
 				ED3F6A2319296ED9002C349C /* Frameworks */,
 				ED3F6A2219296ED9002C349C /* Products */,
 				76E7CDEB3CAAD3EE3ED466E2 /* Pods */,
@@ -182,6 +227,7 @@
 			isa = PBXGroup;
 			children = (
 				ED3F6A2119296ED9002C349C /* Traffle.app */,
+				ED291C811A89C08F0033F480 /* Traffle Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -189,11 +235,12 @@
 		ED3F6A2319296ED9002C349C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				ED291C911A8A06CD0033F480 /* Appsee.framework */,
+				ED63C4891A877C5E007A391B /* Fabric.framework */,
 				ED322777192FDE87009E6B99 /* Crashlytics.framework */,
 				ED322774192DBC08009E6B99 /* CoreVideo.framework */,
 				ED322772192DBBFE009E6B99 /* CoreMedia.framework */,
 				ED322770192DBBF2009E6B99 /* AVFoundation.framework */,
-				ED32276E192DBBCF009E6B99 /* Appsee.framework */,
 				ED32276C192DBA6B009E6B99 /* Crashlytics.framework */,
 				ED3F6A7019299C7F002C349C /* Social.framework */,
 				ED3F6A6E19299C25002C349C /* Twitter.framework */,
@@ -212,6 +259,7 @@
 				ED3F6A2819296ED9002C349C /* UIKit.framework */,
 				ED3F6A3D19296EDA002C349C /* XCTest.framework */,
 				732B2E42641B45C6876FD7AF /* libPods.a */,
+				A180392A8AADB019CC239049 /* libPods-Traffle Tests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -288,8 +336,8 @@
 		ED9C3A7C193827BB00AF0B62 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				EDA90ECD1A834ABA008F990A /* camera.h */,
-				EDA90ECE1A834ABA008F990A /* camera.m */,
+				ED291C8C1A89C2E90033F480 /* camera.h */,
+				ED291C8D1A89C2E90033F480 /* camera.m */,
 				ED98444219402F0E00096791 /* CBG */,
 				ED9C3A8019382A1B00AF0B62 /* CLUtilsDefines.h */,
 				ED9C3A7D193827F000AF0B62 /* CLLocation+measuring.h */,
@@ -301,6 +349,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		ED291C801A89C08F0033F480 /* Traffle Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ED291C891A89C0900033F480 /* Build configuration list for PBXNativeTarget "Traffle Tests" */;
+			buildPhases = (
+				C6DA199661A4FDCFACA391B8 /* Check Pods Manifest.lock */,
+				ED291C7D1A89C08F0033F480 /* Sources */,
+				ED291C7E1A89C08F0033F480 /* Frameworks */,
+				ED291C7F1A89C08F0033F480 /* Resources */,
+				AC308B44FCDF44CF1412FCC4 /* Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ED291C881A89C0900033F480 /* PBXTargetDependency */,
+			);
+			name = "Traffle Tests";
+			productName = "Traffle Tests";
+			productReference = ED291C811A89C08F0033F480 /* Traffle Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		ED3F6A2019296ED9002C349C /* Traffle */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = ED3F6A4D19296EDA002C349C /* Build configuration list for PBXNativeTarget "Traffle" */;
@@ -332,6 +400,10 @@
 				LastUpgradeCheck = 0600;
 				ORGANIZATIONNAME = "Nikolay Derkach";
 				TargetAttributes = {
+					ED291C801A89C08F0033F480 = {
+						CreatedOnToolsVersion = 6.1.1;
+						TestTargetID = ED3F6A2019296ED9002C349C;
+					};
 					ED3F6A2019296ED9002C349C = {
 						DevelopmentTeam = 9GHXTK3SK7;
 						SystemCapabilities = {
@@ -358,11 +430,19 @@
 			projectRoot = "";
 			targets = (
 				ED3F6A2019296ED9002C349C /* Traffle */,
+				ED291C801A89C08F0033F480 /* Traffle Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		ED291C7F1A89C08F0033F480 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		ED3F6A1F19296ED9002C349C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -406,6 +486,36 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		AC308B44FCDF44CF1412FCC4 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Traffle Tests/Pods-Traffle Tests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C6DA199661A4FDCFACA391B8 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		ED32276B192DBA24009E6B99 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -435,6 +545,14 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		ED291C7D1A89C08F0033F480 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED291C901A89C3A40033F480 /* LoginTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		ED3F6A1D19296ED9002C349C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -445,7 +563,6 @@
 				ED3F6A3119296ED9002C349C /* main.m in Sources */,
 				ED98446E19402F0E00096791 /* CBGLocationManager.m in Sources */,
 				ED3F6A6D1929752A002C349C /* MainViewController.m in Sources */,
-				EDA90ECF1A834ABA008F990A /* camera.m in Sources */,
 				ED98446D19402F0E00096791 /* CBGFlickrManager.m in Sources */,
 				ED9C3A7F193827F000AF0B62 /* CLLocation+measuring.m in Sources */,
 				ED98446A19402F0E00096791 /* UIImage+ImageEffects.m in Sources */,
@@ -457,10 +574,19 @@
 				ED9C3A3A19368B9300AF0B62 /* ListTableViewController.m in Sources */,
 				ED98446919402F0E00096791 /* UIImage+Alpha.m in Sources */,
 				ED98446F19402F0E00096791 /* CBGPhotos.m in Sources */,
+				ED291C8E1A89C2E90033F480 /* camera.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		ED291C881A89C0900033F480 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ED3F6A2019296ED9002C349C /* Traffle */;
+			targetProxy = ED291C871A89C0900033F480 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		ED3F6A2D19296ED9002C349C /* InfoPlist.strings */ = {
@@ -474,6 +600,50 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		ED291C8A1A89C0900033F480 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2C79D553AEDBF2B5E45C66E8 /* Pods-Traffle Tests.debug.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Traffle Tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Traffle.app/Traffle";
+			};
+			name = Debug;
+		};
+		ED291C8B1A89C0900033F480 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 832D085A012D630F4AE38CBE /* Pods-Traffle Tests.release.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "Traffle Tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Traffle.app/Traffle";
+			};
+			name = Release;
+		};
 		ED3F6A4B19296EDA002C349C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -595,6 +765,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		ED291C891A89C0900033F480 /* Build configuration list for PBXNativeTarget "Traffle Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED291C8A1A89C0900033F480 /* Debug */,
+				ED291C8B1A89C0900033F480 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		ED3F6A1C19296ED9002C349C /* Build configuration list for PBXProject "Traffle" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

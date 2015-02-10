@@ -10,4 +10,4 @@
 
 #define kTraffleSecondaryColor [UIColor colorWithRed:108/255.0f green:27/255.0f blue:37/255.0f alpha:1.0f] /* 6C1B25 */
 
-#define isiPhone5 ([[UIScreen mainScreen] bounds].size.height == 568)?TRUE:FALSE
+#define isiPhone5orHigher ([[UIScreen mainScreen] bounds].size.height > 480.0f)?TRUE:FALSE

@@ -66,7 +66,7 @@ static CBGStockPhotoManager *sharedManager = nil;
 //        NSString *imagePath = [NSString stringWithFormat:@"%@/%03d-StockPhoto-320x568.png", @"StockPhotos", randomIndex];
         
         NSString *imagePath;
-        if (isiPhone5) {
+        if (isiPhone5orHigher) {
             imagePath = @"big_screen_bg_BLUR";
         } else {
             imagePath = @"small_screen_bg_BLUR";

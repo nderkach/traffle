@@ -26,7 +26,7 @@
 @interface DestinationViewController ()
 
 @property (nonatomic) NSInteger searchFilterDistance;
-@property(nonatomic, weak) NSTimer *timer;
+@property (nonatomic, weak) NSTimer *timer;
 @property (strong, nonatomic) UIButton *chatButton;
 @property (strong, nonatomic) BBBadgeBarButtonItem *barButton;
 @property (nonatomic) CGFloat pictureMaskCenterY;
@@ -35,8 +35,8 @@
 @property (strong, nonatomic) UILabel *hangoutLabel;
 @property (strong, nonatomic) UIImageView *acceptedView;
 @property (strong, nonatomic) UILabel *coolLabel;
-@property (nonatomic, strong) NSURL *userPhotoWebPageURL;
-@property (nonatomic, strong) PFObject *conversation;
+@property (strong, nonatomic) NSURL *userPhotoWebPageURL;
+@property (strong, nonatomic) PFObject *conversation;
 @property (strong, nonatomic) MBProgressHUD *progressHud;
 
 @end
@@ -50,11 +50,6 @@
     
     if (self.incoming) {
         assert([self.requests count]);
-//        PFQuery *query = [PFQuery queryWithClassName:@"Request"];
-//        [query whereKey:@"accepted" equalTo:[NSNull null]];
-//        [query whereKey:@"toUser" equalTo:[PFUser currentUser]];
-//        self.requests = [[NSMutableArray alloc] initWithArray:[query findObjects]];
-        
         self.matchedUser = [self.requests lastObject][@"fromUser"];
         [self.matchedUser fetchIfNeeded];
     }
@@ -67,12 +62,10 @@
     self.chatButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.chatButton addTarget:self action:@selector(chatButtonPressed:) forControlEvents:UIControlEventTouchDown];
     self.chatButton.contentMode = UIViewContentModeCenter;
-    // 38x36
     self.chatButton.frame = CGRectMake(269, 0, image.size.width+16.0f, image.size.height+16.0f);
     [self.chatButton setImage:image forState:UIControlStateNormal];
     
     self.barButton = [[BBBadgeBarButtonItem alloc] initWithCustomView:self.chatButton];
-    
     self.barButton.badgeOriginX = 27.0f;
     self.barButton.badgeOriginY = 6.0f;
     self.barButton.badgeBGColor = kTraffleMainColor;
@@ -91,8 +84,6 @@
         [self crossDissolvePhotos:photos withTitle:@""];
     }];
     
-    NSLog(@"Fetching photo...");
-    
     //Retrieve location and content from Flickr
     [self retrieveLocationAndUpdateBackgroundPhoto];
     
@@ -102,27 +93,14 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     self.searchFilterDistance = [defaults integerForKey:SearchFilterDistancePrefsKey];
     
-//    NSLog(@"defaults = %@", [defaults dictionaryRepresentation]);
-    
     NSLog(@"default search distance: %ld", (long)self.searchFilterDistance);
-
-//    self.meetImage.image = [UIImage imageNamed:@"Meet Jenna in Barcelona"];
-    
-
-    
-//    [self.meetImage setUserInteractionEnabled:YES];
     
     UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipe:)];
     
     // Setting the swipe direction.
     [swipeDown setDirection:UISwipeGestureRecognizerDirectionDown];
     
-//    self.hangoutLabel.userInteractionEnabled = YES;
     [self.view addGestureRecognizer:swipeDown];
-//    [self.hangoutLabel addGestureRecognizer:swipeRight];
-    
-    // TEMP:
-//    [self performSegueWithIdentifier:@"seguePushDemoVC" sender:self];
 }
 
 - (void)viewDidLayoutSubviews
@@ -137,24 +115,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pushNotificationReceived:) name:@"pushNotification" object:nil];
     
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"background_gradient_mask"]];
-    
-    //        PFQuery *query = [PFQuery queryWithClassName:@"Request"];
-    //        [query whereKey:@"accepted" equalTo:[NSNull null]];
-    //        NSArray *requests = [query findObjects];
-    //
-    //        //TODO: FIXME:
-    //
-    //        for (PFObject *request in requests) {
-    //            PFUser *user = request[@"toUser"];
-    //
-    //            NSLog(@"%@, %@", user.objectId, [PFUser currentUser].objectId);
-    //            [user fetchIfNeeded];
-    //            if ([user.objectId isEqualToString:[PFUser currentUser].objectId]) {
-    //                self.requests = [[NSMutableArray alloc] initWithArray:[query findObjects]];
-    //                self.matchedUser = [self.requests lastObject][@"fromUser"];
-    //                break;
-    //            }
-    //        }
     
     self.profilePicture.layer.cornerRadius = self.profilePicture.frame.size.width/2.0;
     self.profilePicture.clipsToBounds = YES;
@@ -189,75 +149,232 @@
     [self presentProfileText];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    [super viewWillDisappear:animated];
+}
+
+#pragma mark Push notifications
+
 - (void)pushNotificationReceived:(NSNotification*)aNotification
 {
-    self.barButton.badgeValue =
-    [NSString stringWithFormat:@"%d", [self.barButton.badgeValue intValue] + 1];
+    self.barButton.badgeValue = [NSString stringWithFormat:@"%d", [self.barButton.badgeValue intValue] + 1];
 }
 
-- (void)chatButtonPressed:(UIButton *)sender
-{
-    [self performSegueWithIdentifier:@"segueListViewFromDestination" sender:self];
-}
+#pragma mark Swipe delegates and related
 
 - (void)handleSwipe:(UISwipeGestureRecognizer *)swipe {
-    
     if (swipe.direction == UISwipeGestureRecognizerDirectionDown) {
-        NSLog(@"Swipe Down");
-
-        [self dismissViewControllerAnimated:YES completion:nil];
-
-    }
-
-}
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"seguePushChatWhenAccepted"]) {
-        UINavigationController *nc = segue.destinationViewController;
-        ChatViewController *vc = (ChatViewController *)nc.topViewController;
-        vc.conversation = self.conversation;
-        vc.delegateModal = self;
-    }
-}
-
-- (void)getNextIncomingRequest
-{
-    if ([self.requests count]) {
-        self.matchedUser = [self.requests lastObject][@"fromUser"];
-        [self.matchedUser fetchIfNeeded];
-        [self refreshScreen];
-    } else {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
-- (void)didDismissChatViewController:(ChatViewController *)vc
+- (void)swipedLeft
 {
-    [self dismissViewControllerAnimated:YES completion:^{
-        if (self.incoming) {
-            [self getNextIncomingRequest];
+    if (self.incoming) {
+        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+        NSInteger numberOfBadges = currentInstallation.badge;
+        if (numberOfBadges > 0) {
+            numberOfBadges -= 1;
+            [currentInstallation saveInBackground];
         }
-    }];
+        self.barButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)numberOfBadges];
+        [[self.requests lastObject] setObject:@NO forKey:@"accepted"];
+        [[self.requests lastObject] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            [self.requests removeLastObject];
+            [self getNextIncomingRequest];
+        }];
+    } else {
+        [self getNextMatch];
+        POPBasicAnimation *fanim = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
+        fanim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+        fanim.fromValue = @(1.0);
+        fanim.toValue = @(0.0);
+        fanim.duration = 2.0f;
+        [self.bethereLabel pop_addAnimation:fanim forKey:@"fade"];
+    }
 }
 
-- (void)didReceiveMemoryWarning
+- (NSInteger)numberOfItemsInSwipeView:(SwipeView *)swipeView
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    return 3;
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+- (void)swipedRight
 {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    if (self.incoming) {
+        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+        NSInteger numberOfBadges = currentInstallation.badge;
+        if (numberOfBadges > 0) {
+            numberOfBadges -= 1;
+            [currentInstallation saveInBackground];
+        }
+        
+        self.barButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)numberOfBadges];
+        
+        [[self.requests lastObject] setObject:@YES forKey:@"accepted"];
+        [[self.requests lastObject] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            
+            [self.requests removeLastObject];
+            
+            PFObject *conversation = [PFObject objectWithClassName:@"Conversation"];
+            conversation[@"participants"] = [NSArray arrayWithObjects:[PFUser currentUser], self.matchedUser, nil];
+            [conversation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                self.conversation = conversation;
+                [self performSegueWithIdentifier:@"seguePushChatWhenAccepted" sender:self];
+                
+                NSDictionary *data = @{@"alert": [NSString stringWithFormat:@"%@ accepted you request!", [PFUser currentUser][@"Name"]],
+                                       @"badge": @"Increment",
+                                       @"type": @"message",
+                                       @"content-available": @1,
+                                       @"from": [NSString stringWithFormat:@"%@", [PFUser currentUser].objectId],
+                                       @"conversation": [NSString stringWithFormat:@"%@", self.conversation.objectId],
+                                       @"text": @"can i haz traffle?"}; // English, motherfucker, do you speak it?
+                
+                PFQuery *pushQuery = [PFInstallation query];
+                [pushQuery whereKey:@"installationUser" equalTo:self.matchedUser.objectId];
+                
+                PFPush *push = [[PFPush alloc] init];
+                [push setQuery:pushQuery];
+                [push setData:data];
+                [push sendPushInBackground];
+            }];
+        }];
+    } else {
+        /* send a request */
+        PFObject *request = [PFObject objectWithClassName:@"Request"];
+        request[@"fromUser"] = [PFUser currentUser];
+        request[@"toUser"] = self.matchedUser;
+        
+        [request saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            NSDictionary *data = @{@"alert": [NSString stringWithFormat:@"%@ wants to hang out!", [PFUser currentUser][@"Name"]],
+                                   @"badge": @"Increment",
+                                   @"type": @"request",
+                                   @"from": [PFUser currentUser].objectId};
+            
+            PFQuery *pushQuery = [PFInstallation query];
+            [pushQuery whereKey:@"installationUser" equalTo:self.matchedUser.objectId];
+            
+            PFPush *push = [[PFPush alloc] init];
+            [push setQuery:pushQuery];
+            [push setData:data];
+            [push sendPushInBackground];
+        }];
+    }
 }
-*/
+
+- (void)swipeViewDidEndDecelerating:(SwipeView *)swipeView
+{
+    if (self.hangoutView.currentItemIndex != 1) {
+        self.hangoutView.scrollEnabled = NO;
+    }
+    
+    if (self.hangoutView.currentItemIndex == 0) {
+        POPBasicAnimation *anim = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerPositionY];
+        anim.duration = 2.0f;
+        anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+        anim.fromValue = @(self.acceptedView.center.y);
+        anim.beginTime = (CACurrentMediaTime() + 1.0);
+        anim.toValue = @(-300);
+
+        CGRect frame = CGRectInset(self.hangoutView.frame, 20.0f, 0.0f);
+        self.coolLabel = [[UILabel alloc] initWithFrame:frame];
+        self.coolLabel.textAlignment = NSTextAlignmentCenter;
+        self.coolLabel.font = [UIFont fontWithName:@"AvenirNextCondensed-Regular" size:33.5f];
+        self.coolLabel.textColor = [UIColor whiteColor];
+        self.coolLabel.numberOfLines = 3;
+        self.coolLabel.text = [NSString stringWithFormat:@"Cool. We'll let %@ know!", self.matchedUser[@"Name"]];
+        [self.hangoutView addSubview:self.coolLabel];
+
+        POPBasicAnimation *canim = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerPositionY];
+        canim.duration = 2.0f;
+        canim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+        canim.fromValue = @(self.coolLabel.center.y);
+        canim.beginTime = (CACurrentMediaTime() + 1.0);
+        canim.toValue = @(self.acceptedView.center.y);
+        
+        canim.completionBlock = ^(POPAnimation *anim, BOOL finished) {
+            if (!self.incoming) {
+                POPBasicAnimation *fianim = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
+                fianim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+                fianim.fromValue = @(0.0);
+                fianim.toValue = @(1.0);
+                fianim.duration = 1.0f;
+                [self.shakeonImageView pop_addAnimation:fianim forKey:@"fade"];
+            }
+            
+            [self swipedRight];
+        };
+        
+        POPBasicAnimation *fanim = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
+        fanim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+        fanim.fromValue = @(1.0);
+        fanim.toValue = @(0.0);
+        fanim.duration = 2.0f;
+        [self.bethereLabel pop_addAnimation:fanim forKey:@"fade"];
+        
+        [self.acceptedView.layer pop_addAnimation:anim forKey:@"confirmed"];
+        if (!self.incoming)
+            [self.coolLabel.layer pop_addAnimation:canim forKey:@"cool"];
+        else {
+            [self swipedRight];
+        }
+        
+    } else if (self.hangoutView.currentItemIndex == 2) {
+        
+        [self swipedLeft];
+    }
+}
+
+- (UIView *)swipeView:(SwipeView *)swipeView viewForItemAtIndex:(NSInteger)index reusingView:(UIView *)view
+{
+    UIView *newView = [[UIView alloc] initWithFrame:self.hangoutView.bounds];
+    
+    switch (index) {
+        case 0:
+        {
+            UIImage *image = [UIImage imageNamed:@"accept_icon"];
+            self.acceptedView = [[UIImageView alloc] initWithImage:image];
+            self.acceptedView.center = newView.center;
+            [newView addSubview:self.acceptedView];
+            break;
+        }
+        case 1:
+        {
+            [self.matchedUser fetchIfNeeded];
+            self.hangoutLabel = [[UILabel alloc] initWithFrame:CGRectInset(newView.frame, 20.0f, 0.0f)];
+            self.hangoutLabel.numberOfLines = 3;
+            self.hangoutLabel.textAlignment = NSTextAlignmentCenter;
+            self.hangoutLabel.textColor = [UIColor whiteColor];
+            self.hangoutLabel.tag = 1;
+            self.hangoutLabel.font = [UIFont fontWithName:@"AvenirNextCondensed-Regular" size:33.5f];
+            self.hangoutLabel.attributedText = [self getHangoutStringWithName:self.matchedUser[@"Name"] city:self.matchedUser[@"city"] incoming:self.incoming];
+            [newView addSubview:self.hangoutLabel];
+            break;
+        }
+        case 2:
+        {
+            break;
+        }
+    }
+    return newView;
+}
+
+- (void)acceptViewTapped
+{
+    POPBasicAnimation *fanim = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
+    fanim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    fanim.fromValue = @(1.0);
+    fanim.toValue = @(0.0);
+    fanim.duration = 1.0f;
+    fanim.completionBlock = ^(POPAnimation *anim, BOOL finished) {
+        self.acceptView.hidden = YES;
+    };
+    [self.acceptView pop_addAnimation:fanim forKey:@"fade"];
+}
+
+#pragma mark animations and presentation
 
 -(void)presentProfilePhoto
 {
@@ -267,12 +384,9 @@
     [file getDataInBackgroundWithBlock:^(NSData *data, NSError *error) {
         if (!error) {
             UIImage *image = [UIImage imageWithData:data];
-            //            [self.profilePicture setImage:image forState:UIControlStateNormal];
-            // TODO: make a button
             [self.profilePicture setImage:image];
         }
     }];
-
     
     POPBasicAnimation *pmianim = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerPositionY];
     pmianim.fromValue = @(-100.0f+self.pictureMaskCenterY-self.profilePictureCenterY);
@@ -281,9 +395,7 @@
     pmianim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
     pmianim.name = @"PictureMaskAnimation";
     pmianim.delegate = self;
-    //
     pmianim.beginTime = (CACurrentMediaTime() + 0.1);
-    //
     
     POPBasicAnimation *pianim = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerPositionY];
     pianim.fromValue = @(-100.0f);
@@ -301,9 +413,6 @@
 
 -(void)pop_animationDidStart:(POPAnimation *)anim
 {
-//    NSLog(@"Hidden? %hhd %hhd %hhd %hhd", self.pictureMask.hidden, self.profilePicture.hidden, self.hangoutView.hidden, self.bethereLabel.hidden);
-
-//    NSLog(@"Animation: %@", anim.name);
     if ([anim.name isEqualToString:@"PictureMaskAnimation"]) {
         self.pictureMask.hidden = NO;
     } else if ([anim.name isEqualToString:@"ProfilePictureAnimation"]) {
@@ -313,7 +422,7 @@
     } else if ([anim.name isEqualToString:@"BethereLabelAnimation"]) {
         self.bethereLabel.hidden = NO;
     } else {
-        
+        // void
     }
 }
 
@@ -323,9 +432,7 @@
     if (self.incoming) {
         self.bethereLabel.hidden = YES;
     } else {
-//        NSInteger distance = [[PFUser currentUser][@"Location"] distanceInKilometersTo:self.matchedUser[@"Location"]];
-//        self.bethereLabel.attributedText = [self getBethereStringWithDistance:distance];
-        self.bethereLabel.text = @"";
+        self.bethereLabel.text = @""; // temporary disable
     }
     
     POPBasicAnimation *mianim = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerPositionX];
@@ -416,7 +523,6 @@
 
 - (NSMutableAttributedString *)getHangoutStringWithName:(NSString *)name city:(NSString *)city incoming:(BOOL)incoming
 {
-    CLS_LOG(@"getHangoutStringWithName: %@, %@", name, city);
     if (!city)
         city = @"Mars";
     UIFont *avenirFontDemiBold = [UIFont fontWithName:@"AvenirNextCondensed-DemiBold" size:33.5f];
@@ -429,12 +535,9 @@
     NSMutableAttributedString *hangoutString;
     
     if (incoming) {
-        
         hangoutString = nameString;
         [hangoutString appendAttributedString:[[NSAttributedString alloc] initWithString:@" wants to hang out." attributes:avenirFontRegularDict]];
-        
     } else {
-
         hangoutString = [[NSMutableAttributedString alloc] initWithString:@"Hang out with " attributes:avenirFontRegularDict];
         [hangoutString appendAttributedString:nameString];
         [hangoutString appendAttributedString:[[NSAttributedString alloc] initWithString:@" in " attributes:avenirFontRegularDict]];
@@ -469,51 +572,7 @@
     return bethereString;
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-    [super viewWillDisappear:animated];
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-//- (IBAction)photoClicked:(id)sender {
-//    
-//    [UIView animateWithDuration:1.0
-//                     animations:^{
-//                         self.meetImage.alpha = 0.0f;
-//                         if (self.meetImage.image == [UIImage imageNamed:@"Meet Jenna in Barcelona"]) {
-//                             self.meetImage.image = [UIImage imageNamed:@"Profile"];
-//                         } else {
-//                             self.meetImage.image = [UIImage imageNamed:@"Meet Jenna in Barcelona"];
-//                         }
-//                         self.meetImage.alpha = 1.0f;
-//                     }];
-//    
-//    [self performSegueWithIdentifier:@"seguePushDemoVC" sender:self];
-//}
-
-- (IBAction)inviteClicked:(id)sender {
-    
-    PFObject *request = [PFObject objectWithClassName:@"Request"];
-    request[@"fromUser"] = [PFUser currentUser];
-    request[@"toUser"] = self.matchedUser;
-    
-    [request saveInBackground];
-}
-
-#pragma mark - Segues
-
-//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-//{
-//    if ([segue.identifier isEqualToString:@"seguePushDemoVC"]) {
-//        ChatViewController *vc = segue.destinationViewController;
-//        vc.recipient = self.matchedUser;
-//    }
-//}
-
-- (IBAction)unwindSegue:(UIStoryboardSegue *)sender { }
-
-
-// Flickr
+#pragma mark Flickr
 
 - (void) retrieveLocationAndUpdateBackgroundPhoto {
     
@@ -521,20 +580,15 @@
     PFGeoPoint *geoPoint = self.matchedUser[@"Location"];
     CLLocation *location = [[CLLocation alloc] initWithLatitude:geoPoint.latitude longitude:geoPoint.longitude];
     
-    //Flickr
     [[CBGFlickrManager sharedManagerWithLocation:location] randomPhotoRequest:^(FlickrRequestInfo * flickrRequestInfo, NSError * error) {
         
         if(!error) {
             self.userPhotoWebPageURL = flickrRequestInfo.userPhotoWebPageURL;
             [self crossDissolvePhotos:flickrRequestInfo.photos withTitle:flickrRequestInfo.userInfo];
         } else {
-            
-            //Error : Stock photos
             [[CBGStockPhotoManager sharedManager] randomStockPhoto:^(CBGPhotos * photos) {
                 [self crossDissolvePhotos:photos withTitle:@""];
             }];
-            
-            NSLog(@"Flickr: %@", error.description);
         }
     }];
 }
@@ -555,6 +609,8 @@
     }
 }
 
+#pragma mark misc
+
 - (void)motionBegan:(UIEventSubtype)motion withEvent:(UIEvent *)event
 {
     if (motion == UIEventSubtypeMotionShake && !self.incoming) {
@@ -566,143 +622,6 @@
             [self getNextMatch];
         }
     }
-}
-
-- (NSInteger)numberOfItemsInSwipeView:(SwipeView *)swipeView
-{
-    return 3;
-}
-
-- (void)swipedRight
-{
-    if (self.incoming) {
-        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-        NSInteger numberOfBadges = currentInstallation.badge;
-        if (numberOfBadges > 0) {
-            numberOfBadges -= 1;
-            [currentInstallation saveInBackground];
-        }
-        
-        self.barButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)numberOfBadges];
-        
-        [[self.requests lastObject] setObject:@YES forKey:@"accepted"];
-        [[self.requests lastObject] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            
-            [self.requests removeLastObject];
-            
-//            PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-//            NSLog(@"%d", currentInstallation.badge);
-//            //FIXME: teporarilly
-//            if (currentInstallation.badge > 0)
-//                currentInstallation.badge -= 1;
-//            NSLog(@"%d", currentInstallation.badge);
-//            [currentInstallation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-//                if (!error) {
-//                    NSLog(@"%d", currentInstallation.badge);
-//                    [[UIApplication sharedApplication] setApplicationIconBadgeNumber:currentInstallation.badge];
-//                }
-//            }];
-            
-            NSLog(@"Creating a new conversation...");
-            
-            // TODO: add some notification
-            
-            PFObject *conversation = [PFObject objectWithClassName:@"Conversation"];
-            conversation[@"participants"] = [NSArray arrayWithObjects:[PFUser currentUser], self.matchedUser, nil];
-            [conversation saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                self.conversation = conversation;
-                [self performSegueWithIdentifier:@"seguePushChatWhenAccepted" sender:self];
-                
-                NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
-                                      [NSString stringWithFormat:@"%@ accepted you request!", [PFUser currentUser][@"Name"]], @"alert",
-                                      @"Increment", @"badge",
-                                      @"message", @"type",
-                                      @1, @"content-available",
-                                      [NSString stringWithFormat:@"%@", [PFUser currentUser].objectId], @"from",
-                                      [NSString stringWithFormat:@"%@", self.conversation.objectId], @"conversation",
-                                      @"can i haz traffle?", @"text",
-                                      nil];
-                
-                // Now we’ll need to query all saved installations to find those of our recipients
-                // Create our Installation query using the self.recipients array we already have
-                PFQuery *pushQuery = [PFInstallation query];
-                [pushQuery whereKey:@"installationUser" equalTo:self.matchedUser.objectId];
-                
-                // Send push notification to our query
-                PFPush *push = [[PFPush alloc] init];
-                [push setQuery:pushQuery];
-                [push setData:data];
-                [push sendPushInBackground];
-            }];
-        }];
-    } else {
-        /* send a request */
-        PFObject *request = [PFObject objectWithClassName:@"Request"];
-        request[@"fromUser"] = [PFUser currentUser];
-        request[@"toUser"] = self.matchedUser;
-        
-        [request saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            // Everything was successful! Reset UI… do other stuff
-            // Here’s where we will send the push
-            //set our options
-            NSDictionary *data = [NSDictionary dictionaryWithObjectsAndKeys:
-                                  [NSString stringWithFormat:@"%@ wants to hang out!", [PFUser currentUser][@"Name"]], @"alert",
-                                  @"Increment", @"badge",
-                                  @"request", @"type",
-                                  [PFUser currentUser].objectId, @"from",
-                                  nil];
-            
-            // Now we’ll need to query all saved installations to find those of our recipients
-            // Create our Installation query using the self.recipients array we already have
-            PFQuery *pushQuery = [PFInstallation query];
-            [pushQuery whereKey:@"installationUser" equalTo:self.matchedUser.objectId];
-            
-            // Send push notification to our query
-            PFPush *push = [[PFPush alloc] init];
-            [push setQuery:pushQuery];
-            [push setData:data];
-            [push sendPushInBackground];
-        }];
-    }
-    
-//    POPBasicAnimation *manim = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerPositionX];
-//    manim.fromValue = @(self.view.center.x);
-//    manim.toValue = @(400);
-//    manim.duration = 0.5f;
-//    manim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-//    manim.completionBlock = ^(POPAnimation *anim, BOOL finished) {
-//        self.hangoutLabel.hidden = YES;
-//        UIImage *image = [UIImage imageNamed:@"accept_icon"];
-//        self.accepted = [[UIImageView alloc] initWithImage:image];
-//        self.accepted.frame = CGRectMake(0, self.hangoutLabel.frame.origin.y, image.size.width, image.size.height);
-//        [self.view addSubview:self.accepted];
-//
-//        POPBasicAnimation *canim = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerPositionX];
-//        canim.duration = 0.5f;
-//        canim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-//        canim.fromValue = @(0);
-//        canim.toValue = @(self.view.center.x);
-//        canim.completionBlock = ^(POPAnimation *anim, BOOL finished) {
-//            [self.accepted removeFromSuperview];
-//            if (self.incoming) {
-//
-//              [[self.requests lastObject] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-//                  [self.requests removeLastObject];
-//                  if ([self.requests count]) {
-//                      self.matchedUser = [self.requests lastObject][@"fromUser"];;
-//                      [self refreshScreen];
-//                  } else {
-//                      // no more requests
-//                      [self dismissViewControllerAnimated:YES completion:nil];
-//                  }
-//              }];
-//            }
-//        };
-//        [self.accepted.layer pop_addAnimation:canim forKey:@"confirmed"];
-//    };
-//    [self.hangoutView.layer pop_addAnimation:manim forKey:@"positionX"];
-
-
 }
 
 - (void)getNextMatch
@@ -724,8 +643,7 @@
         if (matchedUser) {
             self.matchedUser = matchedUser;
             [self refreshScreen];
-        }
-        else {
+        } else {
             [self dismissViewControllerAnimated:YES completion:^{
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"nomatches" object:self userInfo:nil];
             }];
@@ -733,145 +651,39 @@
     }];
 }
 
-- (void)swipedLeft
+- (void)chatButtonPressed:(UIButton *)sender
 {
-    if (self.incoming) {
-        PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-        NSInteger numberOfBadges = currentInstallation.badge;
-        if (numberOfBadges > 0) {
-            numberOfBadges -= 1;
-            [currentInstallation saveInBackground];
-        }
-        self.barButton.badgeValue = [NSString stringWithFormat:@"%ld", (long)numberOfBadges];
-        [[self.requests lastObject] setObject:@NO forKey:@"accepted"];
-        [[self.requests lastObject] saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            [self.requests removeLastObject];
-            [self getNextIncomingRequest];
-        }];
+    [self performSegueWithIdentifier:@"segueListViewFromDestination" sender:self];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if ([segue.identifier isEqualToString:@"seguePushChatWhenAccepted"]) {
+        UINavigationController *nc = segue.destinationViewController;
+        ChatViewController *vc = (ChatViewController *)nc.topViewController;
+        vc.conversation = self.conversation;
+        vc.delegateModal = self;
+    }
+}
+
+- (void)getNextIncomingRequest
+{
+    if ([self.requests count]) {
+        self.matchedUser = [self.requests lastObject][@"fromUser"];
+        [self.matchedUser fetchIfNeeded];
+        [self refreshScreen];
     } else {
-        
-        [self getNextMatch];
-
-        POPBasicAnimation *fanim = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
-        fanim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-        fanim.fromValue = @(1.0);
-        fanim.toValue = @(0.0);
-        fanim.duration = 2.0f;
-        [self.bethereLabel pop_addAnimation:fanim forKey:@"fade"];
+        [self dismissViewControllerAnimated:YES completion:nil];
     }
 }
 
-- (void)swipeViewDidEndDecelerating:(SwipeView *)swipeView
+- (void)didDismissChatViewController:(ChatViewController *)vc
 {
-    if (self.hangoutView.currentItemIndex != 1) {
-        self.hangoutView.scrollEnabled = NO;
-    }
-
-    if (self.hangoutView.currentItemIndex == 0) {
-        POPBasicAnimation *anim = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerPositionY];
-        anim.duration = 2.0f;
-        anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-        anim.fromValue = @(self.acceptedView.center.y);
-        anim.beginTime = (CACurrentMediaTime() + 1.0);
-        anim.toValue = @(-300);
-        anim.completionBlock = ^(POPAnimation *anim, BOOL finished) {
-
-        };
-        CGRect frame = CGRectInset(self.hangoutView.frame, 20.0f, 0.0f);
-        self.coolLabel = [[UILabel alloc] initWithFrame:frame];
-        self.coolLabel.textAlignment = NSTextAlignmentCenter;
-        self.coolLabel.font = [UIFont fontWithName:@"AvenirNextCondensed-Regular" size:33.5f];
-        self.coolLabel.textColor = [UIColor whiteColor];
-        self.coolLabel.numberOfLines = 3;
-        self.coolLabel.text = [NSString stringWithFormat:@"Cool. We'll let %@ know!", self.matchedUser[@"Name"]];
-        [self.hangoutView addSubview:self.coolLabel];
-        POPBasicAnimation *canim = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerPositionY];
-        canim.duration = 2.0f;
-        canim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-        canim.fromValue = @(self.coolLabel.center.y);
-        canim.beginTime = (CACurrentMediaTime() + 1.0);
-        canim.toValue = @(self.acceptedView.center.y);
-        
-        canim.completionBlock = ^(POPAnimation *anim, BOOL finished) {
-            if (!self.incoming) {
-                POPBasicAnimation *fianim = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
-                fianim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-                fianim.fromValue = @(0.0);
-                fianim.toValue = @(1.0);
-                fianim.duration = 1.0f;
-                [self.shakeonImageView pop_addAnimation:fianim forKey:@"fade"];
-            }
-            
-            [self swipedRight];
-        };
-        
-        POPBasicAnimation *fanim = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
-        fanim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-        fanim.fromValue = @(1.0);
-        fanim.toValue = @(0.0);
-        fanim.duration = 2.0f;
-        [self.bethereLabel pop_addAnimation:fanim forKey:@"fade"];
-        
-        
-        [self.acceptedView.layer pop_addAnimation:anim forKey:@"confirmed"];
-        if (!self.incoming)
-            [self.coolLabel.layer pop_addAnimation:canim forKey:@"cool"];
-        else {
-            [self swipedRight];
+    [self dismissViewControllerAnimated:YES completion:^{
+        if (self.incoming) {
+            [self getNextIncomingRequest];
         }
-
-    } else if (self.hangoutView.currentItemIndex == 2) {
-        
-        [self swipedLeft];
-    }
-}
-
-- (UIView *)swipeView:(SwipeView *)swipeView viewForItemAtIndex:(NSInteger)index reusingView:(UIView *)view
-{
-    UIView *newView = [[UIView alloc] initWithFrame:self.hangoutView.bounds];
-    
-    switch (index) {
-        case 0:
-        {
-            UIImage *image = [UIImage imageNamed:@"accept_icon"];
-            self.acceptedView = [[UIImageView alloc] initWithImage:image];
-            self.acceptedView.center = newView.center;
-            [newView addSubview:self.acceptedView];
-            break;
-        }
-        case 1:
-        {
-            [self.matchedUser fetchIfNeeded];
-            CLS_LOG(@"Matched user: %@ incoming: %hhd", self.matchedUser, self.incoming);
-            self.hangoutLabel = [[UILabel alloc] initWithFrame:CGRectInset(newView.frame, 20.0f, 0.0f)];
-            self.hangoutLabel.numberOfLines = 3;
-            self.hangoutLabel.textAlignment = NSTextAlignmentCenter;
-            self.hangoutLabel.textColor = [UIColor whiteColor];
-            self.hangoutLabel.tag = 1;
-            self.hangoutLabel.font = [UIFont fontWithName:@"AvenirNextCondensed-Regular" size:33.5f];
-            self.hangoutLabel.attributedText = [self getHangoutStringWithName:self.matchedUser[@"Name"] city:self.matchedUser[@"city"] incoming:self.incoming];
-            [newView addSubview:self.hangoutLabel];
-            break;
-        }
-        case 2:
-        {
-            break;
-        }
-    }
-    return newView;
-}
-
-- (void)acceptViewTapped
-{
-    POPBasicAnimation *fanim = [POPBasicAnimation animationWithPropertyNamed:kPOPViewAlpha];
-    fanim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    fanim.fromValue = @(1.0);
-    fanim.toValue = @(0.0);
-    fanim.duration = 1.0f;
-    fanim.completionBlock = ^(POPAnimation *anim, BOOL finished) {
-        self.acceptView.hidden = YES;
-    };
-    [self.acceptView pop_addAnimation:fanim forKey:@"fade"];
+    }];
 }
 
 @end

@@ -10,12 +10,28 @@
 
 #import "CustomTableViewCell.h"
 
+@implementation PFImageView (Utility)
+
+// Add a fade animation to images
+-(void) setImage:(UIImage *)image {
+    if ([self.layer animationForKey:@"KEY_FADE_ANIMATION"] == nil) {
+        CABasicAnimation *crossFade = [CABasicAnimation animationWithKeyPath:@"contents"];
+        crossFade.duration = 0.6;
+        crossFade.fromValue  = (__bridge id)(self.image.CGImage);
+        crossFade.toValue = (__bridge id)(image.CGImage);
+        crossFade.removedOnCompletion = NO;
+        [self.layer addAnimation:crossFade forKey:@"KEY_FADE_ANIMATION"];
+    }
+    [super setImage:image];
+}
+
+@end
+
 @interface CustomTableViewCell ()
 
 @property (strong, nonatomic) UIImageView *backgroundImageView;
 @property (strong, nonatomic) UILabel *badgeLabel;
 @property (strong, nonatomic) UIImageView *badgeView;
-//@property (strong, nonatomic) PFUser *user;
 @property (strong, nonatomic) PFImageView *userAvatar;
 
 @property (strong, nonatomic) IBOutlet UILabel *labelDescription;
@@ -29,16 +45,6 @@
 
 @synthesize labelDescription, labelLastMessage;
 @synthesize labelElapsed, labelCounter;
-
-- (void)awakeFromNib {
-    // Initialization code
-}
-
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
-    [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
-}
 
 - (void)setBadgeText:(NSString *)text
 {
@@ -68,7 +74,6 @@
 
 -(void)layoutSubviews {
     [super layoutSubviews];
-    NSLog(@"layout");
     UIImage *profileMask = [UIImage imageNamed:@"chat_profile_mask"];
     self.backgroundView = [[UIImageView alloc] initWithImage:profileMask];
     self.backgroundView.frame = CGRectMake(16, 25, profileMask.size.width, profileMask.size.height);
@@ -77,10 +82,8 @@
     self.userAvatar.layer.cornerRadius = 27;
     self.userAvatar.layer.masksToBounds = YES;
     [self insertSubview:self.userAvatar aboveSubview:self.backgroundView];
-    [self.userAvatar loadInBackground:^(UIImage *image, NSError *error) {
-        NSLog(@"loaded");
-    }];
-    
+    [self.userAvatar loadInBackground];
+
     UIImage *badgeMask = [UIImage imageNamed:@"chat_new_msg"];
     self.badgeView.frame = CGRectMake(61, 29, badgeMask.size.width, badgeMask.size.height);
     [self addSubview:self.badgeView];
@@ -98,21 +101,10 @@
 
 - (void)bindData:(PFObject *)conversation_
 {
-    NSLog(@"bind data");
     self.conversation = conversation_;
 
     PFUser *user = [self.conversation[@"participants"] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self.objectId != %@", [PFUser currentUser].objectId]].firstObject;
     [self.userAvatar setFile:user[@"Photo"]];
-    
-    //---------------------------------------------------------------------------------------------------------------------------------------------
-    labelDescription.text = @"test";//message[PF_MESSAGES_DESCRIPTION];
-//    labelLastMessage.text = message[PF_MESSAGES_LASTMESSAGE];
-    //---------------------------------------------------------------------------------------------------------------------------------------------
-//    NSTimeInterval seconds = [[NSDate date] timeIntervalSinceDate:message.updatedAt];
-//    labelElapsed.text = TimeElapsed(seconds);
-    //---------------------------------------------------------------------------------------------------------------------------------------------
-//    int counter = [message[PF_MESSAGES_COUNTER] intValue];
-//    labelCounter.text = (counter == 0) ? @"" : [NSString stringWithFormat:@"%d new", counter];
     
     UIFont *avenirFont = [UIFont fontWithName:@"AvenirNextCondensed-Regular" size:21.0f];
     UIFont *avenirFontDemiBold = [UIFont fontWithName:@"AvenirNextCondensed-DemiBold" size:21.0f];
@@ -131,10 +123,8 @@
 
     self.textLabel.attributedText = finalString;
     self.textLabel.textColor = [UIColor whiteColor];
-    self.textLabel.numberOfLines = 2; // set the numberOfLines
+    self.textLabel.numberOfLines = 2;
     self.textLabel.lineBreakMode = NSLineBreakByTruncatingTail;
 }
-
-
 
 @end

@@ -1,19 +1,9 @@
 //
-//  Created by Jesse Squires
-//  http://www.hexedbits.com
+//  ChatViewController.h
+//  Traffle
 //
-//
-//  Documentation
-//  http://cocoadocs.org/docsets/JSQMessagesViewController
-//
-//
-//  GitHub
-//  https://github.com/jessesquires/JSQMessagesViewController
-//
-//
-//  License
-//  Copyright (c) 2014 Jesse Squires
-//  Released under an MIT license: http://opensource.org/licenses/MIT
+//  Created by Nikolay Derkach on 28/05/14.
+//  Copyright (c) 2014 Nikolay Derkach. All rights reserved.
 //
 
 #import <Parse/Parse.h>
@@ -28,27 +18,10 @@
 
 @end
 
-@interface Message : PFObject <JSQMessageData>
-
-- (NSDate *)date;
-- (NSString *)sender;
-- (NSString *)text;
-- (id)initWithText:(NSString *)text sender:(PFUser *)sender recipient:(PFUser *)recipient conversation:(PFObject *)conversation;
-
-@end
-
-@interface ChatViewController : JSQMessagesViewController <JSQMessagesCollectionViewDataSource, JSQMessagesCollectionViewDelegateFlowLayout, JSQMessagesCollectionViewCellDelegate, JSQMessageAvatarImageDataSource, UIImagePickerControllerDelegate, UIActionSheetDelegate>
+@interface ChatViewController : JSQMessagesViewController <JSQMessagesCollectionViewDataSource, JSQMessagesCollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UIActionSheetDelegate>
 
 @property (strong, nonatomic) id<ChatViewControllerDelegate> delegateModal;
-
-@property (copy, nonatomic) NSDictionary *avatars;
-
-@property (strong, nonatomic) UIImageView *outgoingBubbleImageView;
-@property (strong, nonatomic) UIImageView *incomingBubbleImageView;
-
-@property (nonatomic, strong) PFObject *conversation;
-
-- (void)receiveMessagePressed:(UIBarButtonItem *)sender;
+@property (strong, nonatomic) PFObject *conversation;
 
 - (void)closePressed:(UIBarButtonItem *)sender;
 

@@ -1,9 +1,9 @@
 //
 //  Algorithm.h
-//  Pods
+//  Traffle
 //
-//  Created by Nikolay Derkach on 16/06/14.
-//
+//  Created by Nikolay Derkach on 28/05/14.
+//  Copyright (c) 2014 Nikolay Derkach. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
